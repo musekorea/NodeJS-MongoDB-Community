@@ -1,0 +1,30 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: white;
+  height: 100vh;
+}
+nav {
+  width: 100%;
+  background-color: rgba(211, 211, 211, 0.3);
+  height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+nav ul {
+  display: flex;
+  width: 100%;
+  padding: 20px;
+}
+nav ul li {
+  margin-right: 30px;
+  list-style: none;
+  text-decoration: none;
+}
+nav ul li a {
+  text-decoration: none;
+}
