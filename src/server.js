@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/write', (req, res) => {
-  return res.render(`write.ejs`);
+  return res.status(200).render(`write.ejs`);
 });
 
 app.post('/newSchedule', async (req, res) => {
@@ -51,7 +51,34 @@ app.post('/newSchedule', async (req, res) => {
 app.get('/list', async (req, res) => {
   try {
     const results = await db.collection('todos').find().toArray();
-    res.render('list.ejs', { results });
+    return res.status(200).render('list.ejs', { results });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+let todo = {};
+
+app.get('/description/:id', async (req, res) => {
+  console.log(`get`, req.params);
+  try {
+    todo = await db.collection('todos').findOne({ _id: Number(req.params.id) });
+    return res.sendStatus(300);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.get('/description', (req, res) => {
+  res.render('description.ejs', { todo });
+});
+
+app.delete('/delete', async (req, res) => {
+  const delID = Number(req.body.id);
+  try {
+    const deleteTodo = await db.collection('todos').deleteOne({ _id: delID });
+    console.log(deleteTodo, delID);
+    res.status(200).send('delete success');
   } catch (error) {
     console.log(error);
   }
@@ -75,16 +102,6 @@ const connectDB = async () => {
     console.log(error);
   }
 };
-app.delete('/delete', async (req, res) => {
-  const delID = Number(req.body.id);
-  try {
-    const deleteTodo = await db.collection('todos').deleteOne({ _id: delID });
-    console.log(deleteTodo, delID);
-    res.status(200).send('delete success');
-  } catch (error) {
-    console.log(error);
-  }
-});
 
 const init = () => {
   connectDB();
