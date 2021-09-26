@@ -1,35 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/style.css" />
-    <script defer defer src="../js/index.js"></script>
-    <title>Document</title>
+    <%- include("./components/HEADS.ejs")%>
+    <script defer src="./js/write.js"></script>
   </head>
   <body>
-    <nav>
-      <ul>
-        <li><a href="/">Code:Me</a></li>
-        <li><a href="/write">Write</a></li>
-        <li><a href="/list">List</a></li>
-      </ul>
-    </nav>
-
-    <form id="scheduleForm">
-      <p>Schedule</p>
-      <input
-        id="schedule"
-        type="text"
-        placeholder="Schedule"
-        name="schedule"
-        required
-      />
-      <p>Due Date</p>
-      <input id="dueDate" type="text" placeholder="Due Date" name="dueDate" />
-      <br />
-      <button>Submit</button>
-    </form>
+    <%- include("./components/NAVBAR.ejs")%>
+    <div class="container">
+      <form id="scheduleForm">
+        <div class="mb-3 mt-3">
+          <label for="formGroupExampleInput" class="form-label">Schedule</label>
+          <input
+            id="schedule"
+            type="text"
+            class="form-control"
+            placeholder="Write a schedule"
+            name="todo"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="formGroupExampleInput2" class="form-label"
+            >Due Date</label
+          >
+          <input
+            id="dueDate"
+            type="date"
+            class="form-control"
+            placeholder="asdf"
+            name="dueDate"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-success">SUBMIT</button>
+      </form>
+    </div>
   </body>
 </html>

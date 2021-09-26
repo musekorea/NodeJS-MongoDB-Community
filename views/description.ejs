@@ -1,21 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/style.css" />
-    <title>Document</title>
+    <%- include("./components/HEADS.ejs")%>
   </head>
   <body>
-    <nav>
-      <ul>
-        <li><a href="/">Code:Me</a></li>
-        <li><a href="/write">Write</a></li>
-        <li><a href="/list">List</a></li>
-      </ul>
-    </nav>
-    <div>Schedule : <%= todo.todo%></div>
-    <div>Due Date : <%=todo.date%></div>
+    <%- include("./components/NAVBAR.ejs")%>
+    <!-- BOOTSTRAP CARDS -->
+    <div class="card" style="width: 100%">
+      <div class="card-body">
+        <h4 class="card-title text-center">Schedule</h4>
+        <h6 class="card-subtitle mb-2 text-muted">Due Date : <%=todo.date%></h6>
+        <p class="card-text"><%= todo.todo%></p>
+        <a href="#" class="card-link">Edit</a>
+        <a href="#" class="card-link">Delete</a>
+      </div>
+    </div>
   </body>
 </html>

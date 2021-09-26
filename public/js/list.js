@@ -1,5 +1,5 @@
 const delBtns = document.querySelectorAll('#delBtn');
-const titles = document.querySelectorAll('h4');
+const titles = document.querySelectorAll('#scheduleTitle');
 
 titles.forEach((title) => {
   title.addEventListener('click', async (e) => {

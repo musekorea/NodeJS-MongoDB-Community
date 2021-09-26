@@ -4,6 +4,7 @@ const inputs = document.querySelectorAll('input');
 const scheduleForm = document.querySelector('#scheduleForm');
 
 scheduleForm.addEventListener('submit', async (e) => {
+  console.log(e);
   e.preventDefault();
   const todo = scheduleInput.value;
   const dueDate = dateInput.value;
