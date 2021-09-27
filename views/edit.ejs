@@ -1,37 +1,37 @@
 <html>
   <head>
     <%- include("./components/HEADS.ejs")%>
-    <script defer src="./js/write.js"></script>
+    <script defer src="/js/edit.js"></script>
   </head>
   <body>
     <%- include("./components/NAVBAR.ejs")%>
     <div class="container">
-      <form id="scheduleForm" method="POST">
+      <form id="editForm" data-id="<%=todo._id%>"">
         <div class="mb-3 mt-3">
           <label for="schedule" class="form-label">Schedule</label>
           <input
-            id="schedule"
+            id="editSchedule"
             type="text"
             class="form-control"
-            placeholder="Write a schedule"
-            name="todo"
+            value="<%=todo.todo%>"
+            name="editSchedule"
             required
           />
         </div>
+
         <div class="mb-3">
-          <label for="formGroupExampleInput2" class="form-label"
-            >Due Date</label
-          >
+          <label for="editDueDate" class="form-label">Due Date</label>
           <input
-            id="dueDate"
+            id="editDueDate"
             type="date"
             class="form-control"
-            placeholder="asdf"
-            name="dueDate"
+            placeholder="<%=todo.date%>"
+            value="<%=todo.date%>"
+            name="editDueDate"
             required
           />
         </div>
-        <button type="submit" class="btn btn-success">SUBMIT</button>
+        <button type="submit" class="btn btn-success">UPDATE</button>
       </form>
     </div>
   </body>

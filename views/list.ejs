@@ -6,13 +6,11 @@
   <body>
     <%- include("./components/NAVBAR.ejs")%>
     <div class="container mt-3">
+      <h3 class="text-center">Todo List</h3>
       <% results.forEach((result)=>{ %>
       <div id="<%= result._id %>">
         <h4 id="scheduleTitle">
-          <%=result.todo%>
-          <!--         <a href="/description/<%= result._id %>"
-            >">Schedule : <%= result.todo %></a
-          > -->
+          <a href="/description/<%= result._id %>"><%= result.todo %></a>
         </h4>
         <p>Due Date :<%= result.date %></p>
         <button id="delBtn" type="submit" class="btn btn-danger">Delete</button>

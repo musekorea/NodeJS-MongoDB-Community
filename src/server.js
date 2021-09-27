@@ -57,20 +57,32 @@ app.get('/list', async (req, res) => {
   }
 });
 
-let todo = {};
-
 app.get('/description/:id', async (req, res) => {
-  console.log(`get`, req.params);
   try {
-    todo = await db.collection('todos').findOne({ _id: Number(req.params.id) });
-    return res.sendStatus(300);
+    const todo = await db
+      .collection('todos')
+      .findOne({ _id: Number(req.params.id) });
+    if (todo === null) {
+      return res.status(500).send(`Not Found Data`);
+    }
+    return res.status(200).render('description.ejs', { todo });
   } catch (error) {
     console.log(error);
   }
 });
 
-app.get('/description', (req, res) => {
-  res.render('description.ejs', { todo });
+app.get('/edit/:id', async (req, res) => {
+  try {
+    const todo = await db
+      .collection('todos')
+      .findOne({ _id: Number(req.params.id) });
+    if (todo === null) {
+      return res.redirect('/list');
+    }
+    return res.status(200).render('edit.ejs', { todo });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.delete('/delete', async (req, res) => {
@@ -79,6 +91,21 @@ app.delete('/delete', async (req, res) => {
     const deleteTodo = await db.collection('todos').deleteOne({ _id: delID });
     console.log(deleteTodo, delID);
     res.status(200).send('delete success');
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.patch('/update/:id', async (req, res) => {
+  const id = Number(req.params.id);
+  try {
+    const updateTodo = await db.collection('todos').updateOne(
+      { _id: id },
+      {
+        $set: { todo: req.body.todo, date: req.body.dueDate },
+      }
+    );
+    return res.sendStatus(300);
   } catch (error) {
     console.log(error);
   }
