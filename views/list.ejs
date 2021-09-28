@@ -1,7 +1,7 @@
 <html>
   <head>
     <%- include("./components/HEADS.ejs")%>
-    <script defer src="./js/list.js"></script>
+    <script defer src="/js/list.js"></script>
   </head>
   <body>
     <%- include("./components/NAVBAR.ejs")%>
@@ -10,7 +10,7 @@
       <% results.forEach((result)=>{ %>
       <div id="<%= result._id %>">
         <h4 id="scheduleTitle">
-          <a href="/description/<%= result._id %>"><%= result.todo %></a>
+          <a href="/todo/description/<%= result._id %>"><%= result.todo %></a>
         </h4>
         <p>Due Date :<%= result.date %></p>
         <button id="delBtn" type="submit" class="btn btn-danger">Delete</button>

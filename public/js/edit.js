@@ -6,16 +6,17 @@ editForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const todo = editSchedule.value;
   const dueDate = editDueDate.value;
-  const urlPath = Number(window.location.pathname.split('/')[2]);
+  const urlPath = Number(window.location.pathname.split('/')[3]);
+  console.log(urlPath);
   try {
-    const patchFetch = await fetch(`/update/${urlPath}`, {
+    const patchFetch = await fetch(`/todo/update/${urlPath}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ todo, dueDate }),
       redirect: 'follow',
     });
     if (patchFetch.status === 300) {
-      return (window.location.href = `/list`);
+      return (window.location.href = `/todo/list`);
     }
   } catch (error) {}
 });

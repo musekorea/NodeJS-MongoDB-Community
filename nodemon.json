@@ -1,1 +1,1 @@
-{ "exec": "babel-node ./src/server.js" }
+{ "exec": "babel-node ./src/init.js" }
