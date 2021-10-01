@@ -29,16 +29,6 @@
           />
         </div>
         <div class="col-md-6">
-          <label for="joinPassword" class="form-label">Password</label>
-          <input
-            type="password"
-            class="form-control"
-            name="joinPassword"
-            id="joinPassword"
-            required
-          />
-        </div>
-        <div class="col-md-6">
           <label for="joinNickname" class="form-label"
             >Nickname <%if(locals.nicknameError){%>
             <span class="message"><%=nicknameError%></span>
@@ -52,6 +42,31 @@
             required
           />
         </div>
+        <div class="col-md-6">
+          <label for="joinPassword" class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            name="joinPassword"
+            id="joinPassword"
+            required
+          />
+        </div>
+        <div class="col-md-6">
+          <label for="joinPassword2" class="form-label"
+            >Password Confirm <%if(locals.passwordError){%>
+            <span class="message"><%=passwordError%></span>
+            <%}%>
+          </label>
+          <input
+            type="password"
+            class="form-control"
+            name="joinPassword2"
+            id="joinPassword2"
+            required
+          />
+        </div>
+
         <div class="col-md-2">
           <label for="joinGender" class="form-label">Gender</label>
           <select
@@ -75,8 +90,11 @@
             required
           />
         </div>
-        <div class="col-md-6">
-          <label for="joinAvatar" class="form-label">Avatar</label>
+        <div class="col-md-12">
+          <label for="joinAvatar" class="form-label"
+            >Avatar
+            <span style="color: gray; font-size: 13px">(Optional)</span></label
+          >
           <input
             type="file"
             class="form-control"

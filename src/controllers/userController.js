@@ -9,10 +9,18 @@ export const getJoinController = (req, res) => {
 export const postJoinController = async (req, res) => {
   const email = req.body.joinEmail;
   const pwd = req.body.joinPassword;
+  const pwd2 = req.body.joinPassword2;
   const nickname = req.body.joinNickname;
   const gender = req.body.joinGender;
   const birth = req.body.joinBirth;
   const avatar = req.body.joinAvatar;
+  console.log(avatar);
+  if (pwd !== pwd2) {
+    return res.status(400).render('join.ejs', {
+      passwordError: ` 🎯  Passwords don't match! Please Check`,
+    });
+  }
+
   //=========EMAIL, NICKNAME VALIDATION=========================
   try {
     const emailCheck = await db.collection('users').findOne({ email });
