@@ -1,9 +1,52 @@
 <html>
   <head>
     <%- include("./components/HEADS.ejs")%>
+    <title>Code Me : Login</title>
   </head>
   <body>
     <%- include("./components/NAVBAR.ejs")%>
-    <p>LOGIN</p>
+    <!--BOOTSTRAP JOIN FROM  -->
+    <div class="container mt-5" }>
+      <form
+        action="/user/login"
+        id="loginForm"
+        class="row g-3"
+        autocomplete="on"
+        method="POST"
+      >
+        <div class="col-md-12">
+          <label for="email" class="form-label"
+            >Email <%if(locals.emailError){%>
+            <span class="message"><%=emailError%></span>
+            <%}%></label
+          >
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            id="email"
+            required
+          />
+        </div>
+        <div class="col-md-12">
+          <label for="password" class="form-label"
+            >Password <%if(locals.passwordError){%>
+            <span class="message"><%=passwordError%></span>
+            <%}%></label
+          >
+          <input
+            type="password"
+            class="form-control"
+            name="password"
+            id="password"
+            required
+          />
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">LOGIN</button>
+        </div>
+      </form>
+    </div>
+    <!--BOOTSTRAP LOGIN FROM  -->
   </body>
 </html>

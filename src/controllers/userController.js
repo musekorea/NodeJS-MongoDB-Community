@@ -2,19 +2,38 @@ import { db } from '../db.js';
 import bcrypt from 'bcrypt';
 
 export const getJoinController = (req, res) => {
+  console.log(res.locals.emailError);
   return res.status(200).render('join.ejs');
 };
 
 export const postJoinController = async (req, res) => {
-  console.log(req.body);
   const email = req.body.joinEmail;
   const pwd = req.body.joinPassword;
   const nickname = req.body.joinNickname;
   const gender = req.body.joinGender;
   const birth = req.body.joinBirth;
   const avatar = req.body.joinAvatar;
-  const password = await bcrypt.hash(pwd, 5);
+  //=========EMAIL, NICKNAME VALIDATION=========================
   try {
+    const emailCheck = await db.collection('users').findOne({ email });
+    if (emailCheck) {
+      console.log('EMAIL EXISTS');
+      res.locals.emailError = ` 😹 : Please try another email. This email already exists`;
+      return res.status(400).render('join.ejs');
+    } else {
+      const nicknameCheck = await db.collection('users').findOne({ nickname });
+      if (nicknameCheck) {
+        console.log('NICKNAME EXISTS');
+        res.locals.nicknameError = ` 😹 : Please try another nickname. This nickname already exists`;
+        return res.status(300).render('join.ejs');
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  //==========INSERT TO DB==============================
+  try {
+    const password = await bcrypt.hash(pwd, 5);
     const join = await db.collection('users').insertOne({
       email,
       password,
@@ -33,6 +52,28 @@ export const getLoginController = (req, res) => {
   return res.status(200).render('login.ejs');
 };
 
-export const postLoginController = (req, res) => {
-  console.log(req.body);
+export const postLoginController = async (req, res) => {
+  const email = req.body.email;
+  const currentPassword = req.body.password;
+  try {
+    const emailCheck = await db.collection('users').findOne({ email });
+    if (!emailCheck) {
+      return res.status(400).render('login.ejs', {
+        emailError: `  🙄 Email doesn't exist! Please try again.`,
+      });
+    } else {
+      const hashingPassword = emailCheck.password;
+      bcrypt.compare(currentPassword, hashingPassword, (error, result) => {
+        if (!result) {
+          return res.status(400).render('login.ejs', {
+            passwordError: `  👤 Oh!! It's Wrong Password. Please try again`,
+          });
+        } else {
+          return res.status(200).redirect('/');
+        }
+      });
+    }
+  } catch (error) {
+    console.log(EvalError);
+  }
 };

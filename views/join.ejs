@@ -1,6 +1,7 @@
 <html>
   <head>
     <%- include("./components/HEADS.ejs")%>
+    <title>Code Me : Join</title>
   </head>
   <body>
     <%- include("./components/NAVBAR.ejs")%>
@@ -14,7 +15,11 @@
         method="POST"
       >
         <div class="col-md-6">
-          <label for="joinEmail" class="form-label">Email</label>
+          <label for="joinEmail" class="form-label"
+            >Email <%if(locals.emailError){%>
+            <span class="message"><%=emailError%></span>
+            <%}%>
+          </label>
           <input
             type="email"
             class="form-control"
@@ -34,7 +39,11 @@
           />
         </div>
         <div class="col-md-6">
-          <label for="joinNickname" class="form-label">Nickname</label>
+          <label for="joinNickname" class="form-label"
+            >Nickname <%if(locals.nicknameError){%>
+            <span class="message"><%=nicknameError%></span>
+            <%}%>
+          </label>
           <input
             type="text"
             class="form-control"
