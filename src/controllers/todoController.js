@@ -47,7 +47,6 @@ export const descriptionController = async (req, res) => {
 };
 
 export const editController = async (req, res) => {
-  console.log(req.body, req.params);
   try {
     const todo = await db
       .collection('todos')
@@ -62,7 +61,6 @@ export const editController = async (req, res) => {
 };
 
 export const deleteController = async (req, res) => {
-  console.log(req);
   const delID = Number(req.body.id);
 
   try {
@@ -74,9 +72,7 @@ export const deleteController = async (req, res) => {
   }
 };
 export const updateController = async (req, res) => {
-  console.log(counter);
   const id = Number(req.params.id);
-  console.log(req.params);
   try {
     const updateTodo = await db.collection('todos').updateOne(
       { _id: id },

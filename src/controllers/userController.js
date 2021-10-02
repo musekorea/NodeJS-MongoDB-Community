@@ -2,7 +2,6 @@ import { db } from '../db.js';
 import bcrypt from 'bcrypt';
 
 export const getJoinController = (req, res) => {
-  console.log(res.locals.emailError);
   return res.status(200).render('join.ejs');
 };
 
@@ -14,14 +13,13 @@ export const postJoinController = async (req, res) => {
   const gender = req.body.joinGender;
   const birth = req.body.joinBirth;
   const avatar = req.body.joinAvatar;
-  console.log(avatar);
   if (pwd !== pwd2) {
     return res.status(400).render('join.ejs', {
       passwordError: ` 🎯  Passwords don't match! Please Check`,
     });
   }
 
-  //=========EMAIL, NICKNAME VALIDATION=========================
+  //=========JOIN EMAIL, NICKNAME VALIDATION=========================
   try {
     const emailCheck = await db.collection('users').findOne({ email });
     if (emailCheck) {
@@ -39,7 +37,7 @@ export const postJoinController = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-  //==========INSERT TO DB==============================
+  //==========JOIN INSERT TO DB==============================
   try {
     const password = await bcrypt.hash(pwd, 5);
     const join = await db.collection('users').insertOne({
@@ -77,11 +75,14 @@ export const postLoginController = async (req, res) => {
             passwordError: `  👤 Oh!! It's Wrong Password. Please try again`,
           });
         } else {
+          delete emailCheck.password;
+          req.session.isLoggedIn = true;
+          req.session.user = emailCheck;
           return res.status(200).redirect('/');
         }
       });
     }
   } catch (error) {
-    console.log(EvalError);
+    console.log(error);
   }
 };
