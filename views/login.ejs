@@ -14,7 +14,7 @@
         autocomplete="on"
         method="POST"
       >
-        <div class="col-md-12">
+        <div class="mb-3">
           <label for="email" class="form-label"
             >Email <%if(locals.emailError){%>
             <span class="message"><%=emailError%></span>
@@ -28,7 +28,7 @@
             required
           />
         </div>
-        <div class="col-md-12">
+        <div class="mb-3">
           <label for="password" class="form-label"
             >Password <%if(locals.passwordError){%>
             <span class="message"><%=passwordError%></span>
@@ -42,11 +42,47 @@
             required
           />
         </div>
-        <div class="col-12">
+        <div class="col-3 mb-3">
           <button type="submit" class="btn btn-primary">LOGIN</button>
         </div>
       </form>
     </div>
     <!--BOOTSTRAP LOGIN FROM  -->
+    <br />
+
+    <!--BOOTSTRAP SOCIAL LOGIN -->
+    <div class="d-grid gap-3 col-3 mx-auto">
+      <a href="/user/github/start" class="row">
+        <button
+          class="btn btn-primary"
+          type="button"
+          style="background-color: cornflowerblue; border: none"
+        >
+          <img
+            src="/images/git.png"
+            style="width: 22px; height: 22px; margin-right: 10px"
+          />
+          GITHUB LOGIN
+        </button></a
+      >
+
+      <button
+        class="btn btn-primary"
+        type="button"
+        style="background-color: darkgray; border: none"
+      >
+        <img
+          src="/images/google.png"
+          style="width: 90px; height: 22px; margin-right: 10px"
+        />LOGIN
+      </button>
+      <button class="btn btn-success" type="button">
+        <img
+          src="/images/wechat.svg"
+          style="height: 22px; margin-right: 10px"
+        />WECHAT LOGIN
+      </button>
+    </div>
+    <!--BOOTSTRAP SOCIAL LOGIN -->
   </body>
 </html>

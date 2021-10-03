@@ -5,6 +5,7 @@ import {
   getLoginController,
   postLoginController,
   logoutController,
+  githubStartController,
 } from '../controllers/userController';
 import { multerUpload } from '../middlewares';
 
@@ -15,5 +16,6 @@ userRouter.post('/join', multerUpload.single('avatar'), postJoinController);
 userRouter.get('/login', getLoginController);
 userRouter.post('/login', postLoginController);
 userRouter.get('/logout', logoutController);
+userRouter.get('/github/start', githubStartController);
 
 export default userRouter;

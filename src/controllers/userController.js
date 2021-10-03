@@ -10,7 +10,12 @@ export const postJoinController = async (req, res) => {
   const pwd = req.body.joinPassword;
   const pwd2 = req.body.joinPassword2;
   const nickname = req.body.joinNickname;
-  const gender = req.body.joinGender;
+  let gender = '';
+  if (req.body.joinGender === 'Choose...') {
+    gender = '';
+  } else {
+    gender = req.body.joinGender;
+  }
   const birth = req.body.joinBirth;
   let avatar = '';
   if (req.file) {
@@ -98,4 +103,16 @@ export const logoutController = async (req, res) => {
   req.session.destroy();
   res.clearCookie('connect.sid');
   return res.status(200).redirect('/');
+};
+
+export const githubStartController = (req, res) => {
+  const baseURL = 'https://github.com/login/oauth/authorize?';
+  const config = {
+    client_id: 'cb7206b86aabc34607fe',
+    scope: 'read:user%20user:email',
+    allow_signup: true,
+  };
+  const query = new URLSearchParams(config).toString();
+  const finalURL = baseURL + query;
+  res.redirect(finalURL);
 };
