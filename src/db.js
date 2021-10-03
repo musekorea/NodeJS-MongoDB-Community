@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-const url = `mongodb+srv://codeme:blueb612@todolist.yd9mm.mongodb.net/test`;
+const url = process.env.DB_URL;
 const dbName = `todolist`;
 const client = new MongoClient(url);
 

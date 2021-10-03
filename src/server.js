@@ -21,7 +21,7 @@ app.use(
   session({
     resave: false,
     saveUninitialized: false,
-    secret: 'codeme',
+    secret: process.env.SESSION_SECRET,
   })
 );
 app.use(resLocals);
