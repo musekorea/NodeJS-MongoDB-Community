@@ -13,13 +13,14 @@ const app = express();
 app.use(morgan('dev'));
 app.use(cors());
 app.use(express.static('public'));
+app.use('/uploads', express.static('uploads'));
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     secret: 'codeme',
   })
 );

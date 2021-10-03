@@ -13,6 +13,7 @@
         class="row g-3"
         autocomplete="on"
         method="POST"
+        enctype="multipart/form-data"
       >
         <div class="col-md-6">
           <label for="joinEmail" class="form-label"
@@ -91,15 +92,16 @@
           />
         </div>
         <div class="col-md-12">
-          <label for="joinAvatar" class="form-label"
+          <label for="avatar" class="form-label"
             >Avatar
             <span style="color: gray; font-size: 13px">(Optional)</span></label
           >
           <input
             type="file"
             class="form-control"
-            name="joinAvatar"
-            id="joinAvatar"
+            name="avatar"
+            id="avatar"
+            accept="image/*"
           />
         </div>
         <div class="col-12">

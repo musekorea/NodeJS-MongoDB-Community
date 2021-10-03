@@ -59,7 +59,21 @@
             class="nav-link active"
             aria-current="page"
             href="/user/userProfile"
-            >👽 <%=locals.user.nickname%></a
+          >
+            <%if(locals.user.avatar===""){%>
+            <span>👽 <%=locals.user.nickname%></span>
+            <%}else{%>
+            <img
+              src="/<%=locals.user.avatar%>"
+              alt="avatar"
+              style="
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                margin-right: 2px;
+              "
+            />
+            <%=locals.user.nickname%> <%}%></a
           >
         </li>
         <%}else{%>

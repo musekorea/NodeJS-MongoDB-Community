@@ -12,7 +12,12 @@ export const postJoinController = async (req, res) => {
   const nickname = req.body.joinNickname;
   const gender = req.body.joinGender;
   const birth = req.body.joinBirth;
-  const avatar = req.body.joinAvatar;
+  let avatar = '';
+  if (req.file) {
+    avatar = req.file.path;
+  } else {
+    avatar = '';
+  }
   if (pwd !== pwd2) {
     return res.status(400).render('join.ejs', {
       passwordError: ` 🎯  Passwords don't match! Please Check`,
@@ -85,4 +90,12 @@ export const postLoginController = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+export const logoutController = async (req, res) => {
+  /*   req.session.isLoggedIn = false;
+  req.session.user = null; */
+  req.session.destroy();
+  res.clearCookie('connect.sid');
+  return res.status(200).redirect('/');
 };
