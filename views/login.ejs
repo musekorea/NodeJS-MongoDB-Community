@@ -45,6 +45,9 @@
         <div class="col-3 mb-3">
           <button type="submit" class="btn btn-primary">LOGIN</button>
         </div>
+        <%if(locals.socialError){%>
+        <h6 class="row mb-3" style="color: red"><%=socialError%></h4>
+        <%}%>
       </form>
     </div>
     <!--BOOTSTRAP LOGIN FROM  -->

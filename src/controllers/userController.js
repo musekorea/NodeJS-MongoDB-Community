@@ -1,5 +1,8 @@
 import { db } from '../db.js';
 import bcrypt from 'bcrypt';
+import fetch from 'cross-fetch';
+
+//=========LOCAL JOIN===========================
 
 export const getJoinController = (req, res) => {
   return res.status(200).render('join.ejs');
@@ -29,10 +32,9 @@ export const postJoinController = async (req, res) => {
     });
   }
 
-  //=========JOIN EMAIL, NICKNAME VALIDATION=========================
   try {
-    const emailCheck = await db.collection('users').findOne({ email });
-    if (emailCheck) {
+    const user = await db.collection('users').findOne({ email });
+    if (user) {
       console.log('EMAIL EXISTS');
       res.locals.emailError = ` 😹 : Please try another email. This email already exists`;
       return res.status(400).render('join.ejs');
@@ -47,7 +49,7 @@ export const postJoinController = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-  //==========JOIN INSERT TO DB==============================
+
   try {
     const password = await bcrypt.hash(pwd, 5);
     const join = await db.collection('users').insertOne({
@@ -57,12 +59,15 @@ export const postJoinController = async (req, res) => {
       gender,
       birth,
       avatar,
+      socialOnly: false,
     });
     res.status(300).redirect('/user/login');
   } catch (error) {
     console.log(error);
   }
 };
+
+//==========LOCAL LOGIN=============================
 
 export const getLoginController = (req, res) => {
   return res.status(200).render('login.ejs');
@@ -72,22 +77,28 @@ export const postLoginController = async (req, res) => {
   const email = req.body.email;
   const currentPassword = req.body.password;
   try {
-    const emailCheck = await db.collection('users').findOne({ email });
-    if (!emailCheck) {
+    const user = await db.collection('users').findOne({ email });
+    if (user.socialOnly) {
+      return res.status(400).render('login.ejs', {
+        socialError: `🧘‍♀️ You already have a ${user.oAuth} Account. Please try ${user.oAuth} Login!`,
+      });
+    }
+
+    if (!user) {
       return res.status(400).render('login.ejs', {
         emailError: `  🙄 Email doesn't exist! Please try again.`,
       });
     } else {
-      const hashingPassword = emailCheck.password;
+      const hashingPassword = user.password;
       bcrypt.compare(currentPassword, hashingPassword, (error, result) => {
         if (!result) {
           return res.status(400).render('login.ejs', {
             passwordError: `  👤 Oh!! It's Wrong Password. Please try again`,
           });
         } else {
-          delete emailCheck.password;
+          delete user.password;
           req.session.isLoggedIn = true;
-          req.session.user = emailCheck;
+          req.session.user = user;
           return res.status(200).redirect('/');
         }
       });
@@ -97,6 +108,8 @@ export const postLoginController = async (req, res) => {
   }
 };
 
+//=============LOGOUT==============================
+
 export const logoutController = async (req, res) => {
   /*   req.session.isLoggedIn = false;
   req.session.user = null; */
@@ -104,15 +117,82 @@ export const logoutController = async (req, res) => {
   res.clearCookie('connect.sid');
   return res.status(200).redirect('/');
 };
+//=================GITHUB OAUTH====================
 
 export const githubStartController = (req, res) => {
   const baseURL = 'https://github.com/login/oauth/authorize?';
   const config = {
     client_id: 'cb7206b86aabc34607fe',
-    scope: 'read:user%20user:email',
+    scope: 'read:user user:email',
     allow_signup: true,
   };
   const query = new URLSearchParams(config).toString();
   const finalURL = baseURL + query;
   res.redirect(finalURL);
+};
+
+export const githubFinishController = async (req, res) => {
+  const baseURL = 'https://github.com/login/oauth/access_token?';
+  const config = {
+    client_id: 'cb7206b86aabc34607fe',
+    client_secret: process.env.GITHUB_SECRET,
+    code: req.query.code,
+  };
+  const query = new URLSearchParams(config).toString();
+  const finalURL = baseURL + query;
+  try {
+    const tokenFetch = await fetch(finalURL, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+    const tokenJson = await tokenFetch.json();
+    const access_token = tokenJson.access_token;
+    if (access_token) {
+      const userRequest = await fetch(`https://api.github.com/user`, {
+        method: 'get',
+        headers: { Authorization: `token ${access_token}` },
+      });
+      const userJson = await userRequest.json();
+      const emailRequest = await fetch(`https://api.github.com/user/emails`, {
+        method: 'get',
+        headers: { Authorization: `token ${access_token}` },
+      });
+      const emailJson = await emailRequest.json();
+      const email = emailJson.find((item) => {
+        return item.primary === true && item.verified === true;
+      }).email;
+      const userExist = await db.collection('users').findOne({ email });
+      if (userExist) {
+        req.session.isLoggedIn = true;
+        req.session.user = userExist;
+        return res.redirect('/');
+      } else {
+        const nickname = userJson.login;
+        const gender = '';
+        const birth = '';
+        const avatar = userJson.avatar_url;
+        const password = '';
+        const addUser = await db.collection('users').insertOne({
+          email,
+          password,
+          nickname,
+          gender,
+          birth,
+          avatar,
+          socialOnly: true,
+          oAuth: `Github`,
+        });
+        req.session.isLoggedIn = true;
+        req.session.socialOnly = true;
+        req.session.user = await db.collection('users').findOne({ email });
+        return res.redirect('/');
+      }
+    } else {
+      return res.redirect('/user/login');
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };

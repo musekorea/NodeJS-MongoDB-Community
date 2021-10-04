@@ -65,7 +65,7 @@ export const deleteController = async (req, res) => {
 
   try {
     const deleteTodo = await db.collection('todos').deleteOne({ _id: delID });
-    console.log(deleteTodo, delID);
+
     res.status(200).send('delete success');
   } catch (error) {
     console.log(error);
