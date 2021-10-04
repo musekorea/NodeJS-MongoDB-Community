@@ -7,6 +7,8 @@ import {
   logoutController,
   githubStartController,
   githubFinishController,
+  googleStartController,
+  googleFinishController,
 } from '../controllers/userController';
 import { multerUpload } from '../middlewares';
 
@@ -19,5 +21,7 @@ userRouter.post('/login', postLoginController);
 userRouter.get('/logout', logoutController);
 userRouter.get('/github/start', githubStartController);
 userRouter.get('/github/callback', githubFinishController);
+userRouter.get('/google/start', googleStartController);
+userRouter.get('/google/callback', googleFinishController);
 
 export default userRouter;

@@ -44,6 +44,7 @@
         </div>
         <div class="col-3 mb-3">
           <button type="submit" class="btn btn-primary">LOGIN</button>
+          
         </div>
         <%if(locals.socialError){%>
         <h6 class="row mb-3" style="color: red"><%=socialError%></h4>
@@ -68,7 +69,7 @@
           GITHUB LOGIN
         </button></a
       >
-
+      <a href="/user/google/start" class="row">
       <button
         class="btn btn-primary"
         type="button"
@@ -79,6 +80,7 @@
           style="width: 90px; height: 22px; margin-right: 10px"
         />LOGIN
       </button>
+    </a>
       <button class="btn btn-success" type="button">
         <img
           src="/images/wechat.svg"

@@ -1,6 +1,7 @@
 import { db } from '../db.js';
 import bcrypt from 'bcrypt';
 import fetch from 'cross-fetch';
+import { token } from 'morgan';
 
 //=========LOCAL JOIN===========================
 
@@ -167,7 +168,7 @@ export const githubFinishController = async (req, res) => {
       if (userExist) {
         req.session.isLoggedIn = true;
         req.session.user = userExist;
-        return res.redirect('/');
+        return res.status(300).redirect('/');
       } else {
         const nickname = userJson.login;
         const gender = '';
@@ -187,10 +188,92 @@ export const githubFinishController = async (req, res) => {
         req.session.isLoggedIn = true;
         req.session.socialOnly = true;
         req.session.user = await db.collection('users').findOne({ email });
-        return res.redirect('/');
+        return res.status(300).redirect('/');
       }
     } else {
-      return res.redirect('/user/login');
+      return res.status(300).redirect('/user/login');
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+//==========GOOGLE LOGIN=================
+export const googleStartController = (req, res) => {
+  const baseUrl = `https://accounts.google.com/o/oauth2/v2/auth?`;
+  const config = {
+    client_id:
+      '68667364665-q7g12ujqcvdaa9o1nir08r0ouclhuid1.apps.googleusercontent.com',
+    redirect_uri: `http://localhost:8080/user/google/callback`,
+    response_type: 'code',
+    scope: 'openid email profile',
+  };
+  const query = new URLSearchParams(config).toString();
+  const finalURL = baseUrl + query;
+  res.redirect(finalURL);
+};
+
+export const googleFinishController = async (req, res) => {
+  const baseURL = `https://oauth2.googleapis.com/token?`;
+  const config = {
+    code: req.query.code,
+    client_id:
+      '68667364665-q7g12ujqcvdaa9o1nir08r0ouclhuid1.apps.googleusercontent.com',
+    client_secret: process.env.GOOGLE_SECRET,
+    redirect_uri: `http://localhost:8080/user/google/callback`,
+    grant_type: 'authorization_code',
+  };
+  const query = new URLSearchParams(config).toString();
+  const finalURL = baseURL + query;
+  try {
+    const requestToken = await fetch(finalURL, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+    const tokenJson = await requestToken.json();
+    const accessToken = tokenJson.access_token;
+    if (accessToken) {
+      const userFetch = await fetch(
+        `https://www.googleapis.com/oauth2/v3/userinfo`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const userJson = await userFetch.json();
+      console.log(userJson);
+      const email = userJson.email;
+      const userExist = await db.collection('users').findOne({ email });
+      if (userExist) {
+        req.session.isLoggedIn = true;
+        req.session.user = userExist;
+        return res.status(300).redirect('/');
+      } else {
+        const nickname = `${userJson.family_name} ${userJson.given_name}`;
+        const gender = '';
+        const birth = '';
+        const avatar = userJson.picture;
+        const password = '';
+        const addUser = await db.collection('users').insertOne({
+          email,
+          password,
+          nickname,
+          gender,
+          birth,
+          avatar,
+          socialOnly: true,
+          oAuth: `Google`,
+        });
+        req.session.isLoggedIn = true;
+        req.session.socialOnly = true;
+        req.session.user = await db.collection('users').findOne({ email });
+        return res.status(300).redirect('/');
+      }
+    } else {
+      console.log(`error`);
     }
   } catch (error) {
     console.log(error);
