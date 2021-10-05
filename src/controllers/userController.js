@@ -279,3 +279,19 @@ export const googleFinishController = async (req, res) => {
     console.log(error);
   }
 };
+
+export const wechatStartController = (req, res) => {
+  const baseURL = `https://open.weixin.qq.com/connect/qrconnect?`;
+  const config = {
+    appid: process.env.WECHAT_APPID,
+    redirect_uri: `http://localhost:8080/user/wechat/callback:`,
+    response_type: 'code',
+    scope: 'snsapi_login',
+  };
+  const query = new URLSearchParams(config).toString();
+  const finalURL = baseURL + query;
+  res.redirect(finalURL);
+};
+export const wechatFinishController = (req, res) => {
+  console.log(req);
+};

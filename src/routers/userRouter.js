@@ -9,6 +9,8 @@ import {
   githubFinishController,
   googleStartController,
   googleFinishController,
+  wechatStartController,
+  wechatFinishController,
 } from '../controllers/userController';
 import { multerUpload } from '../middlewares';
 
@@ -23,5 +25,7 @@ userRouter.get('/github/start', githubStartController);
 userRouter.get('/github/callback', githubFinishController);
 userRouter.get('/google/start', googleStartController);
 userRouter.get('/google/callback', googleFinishController);
+userRouter.get('/wechat/start', wechatStartController);
+userRouter.get('/wechat/callback', wechatFinishController);
 
 export default userRouter;
