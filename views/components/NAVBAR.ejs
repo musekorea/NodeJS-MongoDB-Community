@@ -1,5 +1,5 @@
 <!-- BOOTSTRAP NAV BAR -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">Code:Me</a>
     <button
@@ -13,11 +13,13 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/">Home</a>
         </li>
+        <%if(locals.isLoggedIn){%>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/todo/write"
             >Write</a
@@ -28,32 +30,6 @@
             >List</a
           >
         </li>
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            id="navbarDropdown"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Dropdown
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider" /></li>
-            <li>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </li>
-          </ul>
-        </li>
-        <%if(locals.isLoggedIn){%>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/user/logout"
-            >Logout</a
-          >
-        </li>
         <li class="nav-item">
           <a
             class="nav-link active"
@@ -62,22 +38,34 @@
           >
             <%if(locals.user.avatar===""){%>
             <span>👽 <%=locals.user.nickname%></span>
-            <%}else{%> <img <%if(locals.socialonly===false){%>
-            src="/<%=locals.user.avatar%>" <%}else{%>
-            src="<%=locals.user.avatar%>" <%}%> alt="avatar" style=" width:
-            30px; height: 30px; border-radius: 50%; margin-right: 2px; " />
+            <%}else{%>
+            <img
+              src="<%=locals.user.avatar%>"
+              alt="avatar"
+              style="
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                margin-right: 2px;
+              "
+            />
             <%=locals.user.nickname%> <%}%></a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/user/logout"
+            >Logout</a
           >
         </li>
         <%}else{%>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/user/login"
-            >Login</a
+            >LOGIN</a
           >
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/user/join"
-            >Join</a
+            >JOIN</a
           >
         </li>
         <%}%>

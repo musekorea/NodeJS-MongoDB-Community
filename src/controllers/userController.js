@@ -1,7 +1,6 @@
 import { db } from '../db.js';
 import bcrypt from 'bcrypt';
 import fetch from 'cross-fetch';
-import { token } from 'morgan';
 
 //=========LOCAL JOIN===========================
 
@@ -23,7 +22,7 @@ export const postJoinController = async (req, res) => {
   const birth = req.body.joinBirth;
   let avatar = '';
   if (req.file) {
-    avatar = req.file.path;
+    avatar = '/' + req.file.path;
   } else {
     avatar = '';
   }
@@ -79,15 +78,13 @@ export const postLoginController = async (req, res) => {
   const currentPassword = req.body.password;
   try {
     const user = await db.collection('users').findOne({ email });
-    if (user.socialOnly) {
-      return res.status(400).render('login.ejs', {
-        socialError: `🧘‍♀️ You already have a ${user.oAuth} Account. Please try ${user.oAuth} Login!`,
-      });
-    }
-
     if (!user) {
       return res.status(400).render('login.ejs', {
         emailError: `  🙄 Email doesn't exist! Please try again.`,
+      });
+    } else if (user.socialOnly) {
+      return res.status(400).render('login.ejs', {
+        socialError: `🧘‍♀️ You already have a ${user.oAuth} Account. Please try ${user.oAuth} Login!`,
       });
     } else {
       const hashingPassword = user.password;
@@ -244,7 +241,6 @@ export const googleFinishController = async (req, res) => {
         }
       );
       const userJson = await userFetch.json();
-      console.log(userJson);
       const email = userJson.email;
       const userExist = await db.collection('users').findOne({ email });
       if (userExist) {
@@ -294,4 +290,83 @@ export const wechatStartController = (req, res) => {
 };
 export const wechatFinishController = (req, res) => {
   console.log(req);
+};
+
+//===========USER PROFILE==================
+export const getUserProfileController = (req, res) => {
+  res.status(200).render('userProfile.ejs');
+};
+
+export const getEditProfileController = (req, res) => {
+  res.status(200).render('editUserProfile.ejs');
+};
+
+export const postEditProfileController = async (req, res) => {
+  let avatar = '';
+  if (req.file) {
+    avatar = '/' + req.file.path;
+  } else {
+    avatar = req.session.user.avatar;
+  }
+  let { editEmail, nickname, gender, birth } = req.body;
+  if (
+    editEmail === req.session.user.email &&
+    nickname === req.session.user.nickname
+  ) {
+    const updateProfile = await db.collection('users').updateOne(
+      { email: req.session.user.email },
+      {
+        $set: {
+          email: req.session.user.email,
+          nickname: req.session.user.nickname,
+          gender,
+          birth,
+          avatar,
+          socialOnly: req.session.user.socialOnly,
+          oAuth: req.session.user.oAuth,
+        },
+      }
+    );
+    req.session.user = await db
+      .collection('users')
+      .findOne({ email: editEmail });
+    req.flash('message', `Profile has updated`);
+    return res.redirect('/user/userProfile');
+  } else {
+    const emailCheck = await db
+      .collection('users')
+      .find({ email: editEmail })
+      .toArray();
+    if (emailCheck.length !== 0 && editEmail !== req.session.user.email) {
+      req.flash('emailExist', ` ${editEmail} is already taken`);
+      return res.render('editUserProfile');
+    }
+    const nicknameCheck = await db
+      .collection('users')
+      .find({ nickname })
+      .toArray();
+    if (nicknameCheck.length !== 0 && nickname !== req.session.user.nickname) {
+      req.flash('nicknameExist', ` ${nickname} is already taken`);
+      return res.render('editUserProfile');
+    }
+    const updateUser = await db.collection('users').updateOne(
+      { email: req.session.user.email },
+      {
+        $set: {
+          email: editEmail,
+          nickname,
+          gender,
+          birth,
+          avatar,
+          socialOnly: req.session.user.socialOnly,
+          oAuth: req.session.user.oAuth,
+        },
+      }
+    );
+    req.session.user = await db
+      .collection('users')
+      .findOne({ email: editEmail });
+    req.flash('message', `Profile has updated`);
+    return res.redirect('/user/userProfile');
+  }
 };

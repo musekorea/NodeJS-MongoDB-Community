@@ -4,6 +4,7 @@ let counter;
 export const writeController = (req, res) => {
   return res.status(200).render(`write.ejs`);
 };
+
 export const newScheduleController = async (req, res) => {
   const todo = req.body.todo;
   const dueDate = req.body.dueDate;

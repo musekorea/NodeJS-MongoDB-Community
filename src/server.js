@@ -2,7 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import session from 'express-session';
-import { resLocals } from './middlewares.js';
+import { resLocals, loginOnly } from './middlewares.js';
+import flash from 'express-flash';
 
 import rootRouter from './routers/rootRouter.js';
 import userRouter from './routers/userRouter.js';
@@ -25,9 +26,10 @@ app.use(
   })
 );
 app.use(resLocals);
+app.use(flash());
 
 app.use('/', rootRouter);
 app.use('/user', userRouter);
-app.use('/todo', todoRouter);
+app.use('/todo', loginOnly, todoRouter);
 
 export default app;

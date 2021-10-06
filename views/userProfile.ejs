@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <%- include("./components/HEADS.ejs")%>
+    <title>Code Me : User Profile</title>
+  </head>
+  <body>
+    <%- include("./components/NAVBAR.ejs")%> 
+    <div class="container mt-3">
+    <%=locals.messages.message%>
+    <h2 class="text-center mb-3"><%=locals.user.nickname%>'s Profile</h2>
+    <ul class="list-group mb-3">
+      <%if(locals.user.avatar){%>
+        <img src="<%=locals.user.avatar%>" class="rounded mx-auto d-block mb-3" alt="avatar" style="width: 150px;">
+        <%}else{%>
+      <img src="/images/noProfile.png" class="rounded mx-auto d-block mb-3" alt="avatar" style="width: 150px;">
+      <%}%>
+      <li class="list-group-item"><span style="display:inline-block; width: 130px; background-color:rgba(128, 128, 128, 0.123);">NICKNAME</span> <%=locals.user.nickname%></li>
+      <li class="list-group-item"><span style="display:inline-block; width: 130px; background-color:rgba(128, 128, 128, 0.123);">EMAIL</span> <%=locals.user.email%></li>
+      <li class="list-group-item"><span style="display:inline-block; width: 130px; background-color:rgba(128, 128, 128, 0.123);">BIRTHDAY</span>   <%=locals.user.birth?locals.user.birth:`🚧 null`%></li>
+      <li class="list-group-item"><span style="display:inline-block; width: 130px; background-color:rgba(128, 128, 128, 0.123);">GENDER</span>  <%=locals.user.gender?locals.user.gender:`🚧 null`%></li>
+      <li class="list-group-item"><span style="display:inline-block; width: 130px; background-color:rgba(128, 128, 128, 0.123);">PASSWORD</span> <span class="text-muted text-decoration-line-through" >INVISIBLE</span></li>
+    </ul>
+    <a href="/user/editProfile"><button type="button" class="btn btn-danger">Edit Profile</button></a>
+  </div>
+</html>

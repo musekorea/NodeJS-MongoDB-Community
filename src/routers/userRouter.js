@@ -11,21 +11,37 @@ import {
   googleFinishController,
   wechatStartController,
   wechatFinishController,
+  getUserProfileController,
+  getEditProfileController,
+  postEditProfileController,
 } from '../controllers/userController';
-import { multerUpload } from '../middlewares';
+import { multerUpload, loginOnly, logoutOnly } from '../middlewares';
 
 const userRouter = express.Router();
 
-userRouter.get('/join', getJoinController);
-userRouter.post('/join', multerUpload.single('avatar'), postJoinController);
-userRouter.get('/login', getLoginController);
-userRouter.post('/login', postLoginController);
-userRouter.get('/logout', logoutController);
-userRouter.get('/github/start', githubStartController);
-userRouter.get('/github/callback', githubFinishController);
-userRouter.get('/google/start', googleStartController);
-userRouter.get('/google/callback', googleFinishController);
-userRouter.get('/wechat/start', wechatStartController);
-userRouter.get('/wechat/callback', wechatFinishController);
+userRouter.get('/join', logoutOnly, getJoinController);
+userRouter.post(
+  '/join',
+  logoutOnly,
+  multerUpload.single('avatar'),
+  postJoinController
+);
+userRouter.get('/login', logoutOnly, getLoginController);
+userRouter.post('/login', logoutOnly, postLoginController);
+userRouter.get('/logout', loginOnly, logoutController);
+userRouter.get('/github/start', logoutOnly, githubStartController);
+userRouter.get('/github/callback', logoutOnly, githubFinishController);
+userRouter.get('/google/start', logoutOnly, googleStartController);
+userRouter.get('/google/callback', logoutOnly, googleFinishController);
+userRouter.get('/wechat/start', logoutOnly, wechatStartController);
+userRouter.get('/wechat/callback', logoutOnly, wechatFinishController);
+userRouter.get('/userProfile', loginOnly, getUserProfileController);
+userRouter.get('/editProfile', loginOnly, getEditProfileController);
+userRouter.post(
+  '/editProfile',
+  loginOnly,
+  multerUpload.single('avatar'),
+  postEditProfileController
+);
 
 export default userRouter;
