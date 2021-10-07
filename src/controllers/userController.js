@@ -90,6 +90,7 @@ export const postLoginController = async (req, res) => {
       const hashingPassword = user.password;
       bcrypt.compare(currentPassword, hashingPassword, (error, result) => {
         if (!result) {
+          console.log(result);
           return res.status(400).render('login.ejs', {
             passwordError: `  👤 Oh!! It's Wrong Password. Please try again`,
           });
@@ -97,6 +98,7 @@ export const postLoginController = async (req, res) => {
           delete user.password;
           req.session.isLoggedIn = true;
           req.session.user = user;
+          req.session.socialOnly = false;
           return res.status(200).redirect('/');
         }
       });
@@ -164,6 +166,7 @@ export const githubFinishController = async (req, res) => {
       const userExist = await db.collection('users').findOne({ email });
       if (userExist) {
         req.session.isLoggedIn = true;
+        req.session.socialOnly = true;
         req.session.user = userExist;
         return res.status(300).redirect('/');
       } else {
@@ -246,6 +249,7 @@ export const googleFinishController = async (req, res) => {
       if (userExist) {
         req.session.isLoggedIn = true;
         req.session.user = userExist;
+        req.session.socialOnly = true;
         return res.status(300).redirect('/');
       } else {
         const nickname = `${userJson.family_name} ${userJson.given_name}`;
@@ -302,6 +306,21 @@ export const getEditProfileController = (req, res) => {
 };
 
 export const postEditProfileController = async (req, res) => {
+  if (req.body.password) {
+    console.log('password check');
+    const currentPassword = req.body.password;
+    const currentUser = await db
+      .collection('users')
+      .findOne({ email: req.session.user.email });
+    const hashingPassword = currentUser.password;
+    const result = bcrypt.compareSync(currentPassword, hashingPassword);
+    console.log(result);
+    if (!result) {
+      req.flash('emailCheck', ` : 👮‍♀️ Password doesn't match!`);
+      return res.render('editUserProfile.ejs');
+    }
+  }
+
   let avatar = '';
   if (req.file) {
     avatar = '/' + req.file.path;
@@ -330,7 +349,7 @@ export const postEditProfileController = async (req, res) => {
     req.session.user = await db
       .collection('users')
       .findOne({ email: editEmail });
-    req.flash('message', `Profile has updated`);
+    req.flash('message', ` ✔ Profile has updated`);
     return res.redirect('/user/userProfile');
   } else {
     const emailCheck = await db
@@ -366,7 +385,7 @@ export const postEditProfileController = async (req, res) => {
     req.session.user = await db
       .collection('users')
       .findOne({ email: editEmail });
-    req.flash('message', `Profile has updated`);
+    req.flash('message', ` ✔ Profile has updated`);
     return res.redirect('/user/userProfile');
   }
 };

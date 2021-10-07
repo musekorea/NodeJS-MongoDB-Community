@@ -18,7 +18,7 @@
       action="/user/editProfile"
       id="editProfileForm"
       class="row g-3"
-      autocomplete="on"
+      autocomplete="off"
       method="POST"
       enctype="multipart/form-data"
       >
@@ -52,7 +52,7 @@
           <label for="gender" class="form-label">Gender</label>
           <select id="gender" class="form-select" name="gender">
             
-            <option <%=locals.user.gender===""?selected:""%>>Choose...</option>
+            <option <%=locals.user.gender===""?"selected":""%>>Choose...</option>
             <option value="male" <%=locals.user.gender==="male"?"selected":""%>>Male</option>
             <option value="female" <%=locals.user.gender==="female"?"selected":""%>>Female</option>
           </select>
@@ -76,6 +76,21 @@
             accept="image/*"
           />
         </div>
+        <%if(locals.socialOnly===false){%>
+        <div class="col-md-6">
+          <label for="password" class="form-label"
+            ><span class="message">✔ Confirm Password  <%=locals.messages.emailCheck%></span> 
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            name="password"
+            id="password"
+            placeholder="Please confirm your password"
+            required
+          />
+        </div>
+        <%}%>
         <div class="col-12">
           <div class="form-check">
             <input

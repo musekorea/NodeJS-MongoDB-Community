@@ -18,3 +18,47 @@
 a {
   text-decoration: none;
 }
+@keyframes flashDisappear {
+  0% {
+    opacity: 0.7;
+    width: 28%;
+  }
+  25% {
+    opacity: 1;
+    width: 50%;
+  }
+  50% {
+    opacity: 1;
+    width: 50%;
+  }
+  75% {
+    opacity: 0.5;
+    width: 28%;
+  }
+  80% {
+    opacity: 0;
+    width: 28%;
+    transform: translateY(0px);
+    height: 50px;
+    margin: 10px auto 10px auto;
+  }
+  100% {
+    display: none;
+    width: 28%;
+    transform: translateY(-500px);
+    height: 0;
+    margin: 0;
+  }
+}
+.flashMessage {
+  overflow: hidden;
+  height: 50px;
+  font-size: 20px;
+  position: relative;
+  text-align: center;
+  margin: 10px auto 10px auto;
+  padding: 10px;
+  background-color: darkseagreen;
+  border-radius: 20px;
+  animation: flashDisappear 4s ease-in-out forwards;
+}
