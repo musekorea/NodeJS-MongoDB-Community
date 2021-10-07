@@ -9,7 +9,8 @@
     <!-- AVATAR IMAGE -->
     <div class="container mt-5" }>
       <%if(locals.user.avatar){%>
-        <img src="<%=locals.user.avatar%>" id="avatarImg" class="rounded mx-auto d-block mb-3" alt="avatar" style="width: 150px;">
+        <img src="<%=locals.user.avatar%>" id="avatarImg" class="mx-auto d-block mb-3" alt="avatar" style="width: 150px;
+        border-radius: 20px">
         <%}else{%>
       <img src="/images/noProfile.png" class="rounded mx-auto d-block mb-3" alt="avatar" style="width: 150px;">
       <%}%>

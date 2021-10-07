@@ -4,9 +4,8 @@
     <title>Code Me : Welcome</title>
   </head>
   <body>
-    <%- include("./components/NAVBAR.ejs")%> 
-    <%if(locals.messages.loginOnly){%>
+    <%- include("./components/NAVBAR.ejs")%> <%if(locals.messages.loginOnly){%>
     <p class="flashMessage"><%=locals.messages.loginOnly%></p>
     <%}%>
-    
+  </body>
 </html>

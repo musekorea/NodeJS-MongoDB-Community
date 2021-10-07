@@ -1,6 +1,8 @@
 import { db } from '../db.js';
 import bcrypt from 'bcrypt';
 import fetch from 'cross-fetch';
+import path from 'path';
+import fs from 'fs';
 
 //=========LOCAL JOIN===========================
 
@@ -27,7 +29,7 @@ export const postJoinController = async (req, res) => {
     avatar = '';
   }
   if (pwd !== pwd2) {
-    return res.status(400).render('join.ejs', {
+    return res.status(403).render('join.ejs', {
       passwordError: ` 🎯  Passwords don't match! Please Check`,
     });
   }
@@ -37,7 +39,7 @@ export const postJoinController = async (req, res) => {
     if (user) {
       console.log('EMAIL EXISTS');
       res.locals.emailError = ` 😹 : Please try another email. This email already exists`;
-      return res.status(400).render('join.ejs');
+      return res.status(403).render('join.ejs');
     } else {
       const nicknameCheck = await db.collection('users').findOne({ nickname });
       if (nicknameCheck) {
@@ -79,11 +81,11 @@ export const postLoginController = async (req, res) => {
   try {
     const user = await db.collection('users').findOne({ email });
     if (!user) {
-      return res.status(400).render('login.ejs', {
+      return res.status(403).render('login.ejs', {
         emailError: `  🙄 Email doesn't exist! Please try again.`,
       });
     } else if (user.socialOnly) {
-      return res.status(400).render('login.ejs', {
+      return res.status(403).render('login.ejs', {
         socialError: `🧘‍♀️ You already have a ${user.oAuth} Account. Please try ${user.oAuth} Login!`,
       });
     } else {
@@ -91,7 +93,7 @@ export const postLoginController = async (req, res) => {
       bcrypt.compare(currentPassword, hashingPassword, (error, result) => {
         if (!result) {
           console.log(result);
-          return res.status(400).render('login.ejs', {
+          return res.status(403).render('login.ejs', {
             passwordError: `  👤 Oh!! It's Wrong Password. Please try again`,
           });
         } else {
@@ -298,7 +300,7 @@ export const wechatFinishController = (req, res) => {
 
 //===========USER PROFILE==================
 export const getUserProfileController = (req, res) => {
-  res.status(200).render('userProfile.ejs');
+  return res.status(200).render('userProfile.ejs');
 };
 
 export const getEditProfileController = (req, res) => {
@@ -317,75 +319,134 @@ export const postEditProfileController = async (req, res) => {
     console.log(result);
     if (!result) {
       req.flash('emailCheck', ` : 👮‍♀️ Password doesn't match!`);
-      return res.render('editUserProfile.ejs');
+      return res.status(403).render('editUserProfile.ejs');
     }
   }
+  try {
+    let avatar = '';
+    if (req.file) {
+      avatar = '/' + req.file.path;
+    } else {
+      avatar = req.session.user.avatar;
+    }
+    let { editEmail, nickname, gender, birth } = req.body;
+    if (
+      editEmail === req.session.user.email &&
+      nickname === req.session.user.nickname
+    ) {
+      const updateProfile = await db.collection('users').updateOne(
+        { email: req.session.user.email },
+        {
+          $set: {
+            email: req.session.user.email,
+            nickname: req.session.user.nickname,
+            gender,
+            birth,
+            avatar,
+            socialOnly: req.session.user.socialOnly,
+            oAuth: req.session.user.oAuth,
+          },
+        }
+      );
+      //DELETE OLD AVATAR IT's working//
+      const avatarPath =
+        path.resolve(__dirname, '..', '..') + req.session.user.avatar;
+      console.log(`path=`, avatarPath);
+      fs.unlink(avatarPath, (error) => {
+        if (error) {
+          throw error;
+        } else {
+          console.log(`File Delete`);
+        }
+      });
 
-  let avatar = '';
-  if (req.file) {
-    avatar = '/' + req.file.path;
-  } else {
-    avatar = req.session.user.avatar;
+      req.session.user = await db
+        .collection('users')
+        .findOne({ email: editEmail });
+      req.flash('message', ` ✔ Profile has updated`);
+
+      return res.status(300).redirect('/user/userProfile');
+    } else {
+      const emailCheck = await db
+        .collection('users')
+        .find({ email: editEmail })
+        .toArray();
+      if (emailCheck.length !== 0 && editEmail !== req.session.user.email) {
+        req.flash('emailExist', ` ${editEmail} is already taken`);
+        return res.status(403).render('editUserProfile');
+      }
+      const nicknameCheck = await db
+        .collection('users')
+        .find({ nickname })
+        .toArray();
+      if (
+        nicknameCheck.length !== 0 &&
+        nickname !== req.session.user.nickname
+      ) {
+        req.flash('nicknameExist', ` ${nickname} is already taken`);
+        return res.status(403).render('editUserProfile');
+      }
+      const updateUser = await db.collection('users').updateOne(
+        { email: req.session.user.email },
+        {
+          $set: {
+            email: editEmail,
+            nickname,
+            gender,
+            birth,
+            avatar,
+            socialOnly: req.session.user.socialOnly,
+            oAuth: req.session.user.oAuth,
+          },
+        }
+      );
+      req.session.user = await db
+        .collection('users')
+        .findOne({ email: editEmail });
+      req.flash('message', ` ✔ Profile has updated`);
+      return res.status(300).redirect('/user/userProfile');
+    }
+  } catch (error) {
+    console.log(error);
   }
-  let { editEmail, nickname, gender, birth } = req.body;
-  if (
-    editEmail === req.session.user.email &&
-    nickname === req.session.user.nickname
-  ) {
-    const updateProfile = await db.collection('users').updateOne(
-      { email: req.session.user.email },
-      {
-        $set: {
-          email: req.session.user.email,
-          nickname: req.session.user.nickname,
-          gender,
-          birth,
-          avatar,
-          socialOnly: req.session.user.socialOnly,
-          oAuth: req.session.user.oAuth,
-        },
+};
+export const getChangePasswordController = (req, res) => {
+  return res.status(200).render('changePassword');
+};
+export const postChangePasswordController = async (req, res) => {
+  const oldPassword = req.body.oldPassword;
+  const newPassword = req.body.newPassword;
+  try {
+    if (oldPassword === '') {
+      const socialUpdate = await db
+        .collection('users')
+        .updateOne(
+          { email: req.session.user.email },
+          { $set: { password: await bcrypt.hash(newPassword, 5) } }
+        );
+      req.flash('message', '✔ Password Updated');
+      res.sendStatus(200);
+    } else {
+      const user = await db
+        .collection('users')
+        .findOne({ email: req.session.user.email });
+      const localPassword = await user.password;
+      const pwdCheck = bcrypt.compareSync(oldPassword, localPassword);
+      if (pwdCheck) {
+        const localsocialUpdate = await db
+          .collection('users')
+          .updateOne(
+            { email: req.session.user.email },
+            { $set: { password: await bcrypt.hash(newPassword, 5) } }
+          );
+        req.flash('message', '✔ Password Updated');
+        res.sendStatus(200);
+      } else {
+        req.flash('pwdCheck', " ✋ Password doesn't match");
+        return res.sendStatus(403);
       }
-    );
-    req.session.user = await db
-      .collection('users')
-      .findOne({ email: editEmail });
-    req.flash('message', ` ✔ Profile has updated`);
-    return res.redirect('/user/userProfile');
-  } else {
-    const emailCheck = await db
-      .collection('users')
-      .find({ email: editEmail })
-      .toArray();
-    if (emailCheck.length !== 0 && editEmail !== req.session.user.email) {
-      req.flash('emailExist', ` ${editEmail} is already taken`);
-      return res.render('editUserProfile');
     }
-    const nicknameCheck = await db
-      .collection('users')
-      .find({ nickname })
-      .toArray();
-    if (nicknameCheck.length !== 0 && nickname !== req.session.user.nickname) {
-      req.flash('nicknameExist', ` ${nickname} is already taken`);
-      return res.render('editUserProfile');
-    }
-    const updateUser = await db.collection('users').updateOne(
-      { email: req.session.user.email },
-      {
-        $set: {
-          email: editEmail,
-          nickname,
-          gender,
-          birth,
-          avatar,
-          socialOnly: req.session.user.socialOnly,
-          oAuth: req.session.user.oAuth,
-        },
-      }
-    );
-    req.session.user = await db
-      .collection('users')
-      .findOne({ email: editEmail });
-    req.flash('message', ` ✔ Profile has updated`);
-    return res.redirect('/user/userProfile');
+  } catch (error) {
+    console.log(error);
   }
 };

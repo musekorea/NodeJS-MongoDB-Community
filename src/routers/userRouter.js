@@ -14,6 +14,8 @@ import {
   getUserProfileController,
   getEditProfileController,
   postEditProfileController,
+  getChangePasswordController,
+  postChangePasswordController,
 } from '../controllers/userController';
 import { multerUpload, loginOnly, logoutOnly } from '../middlewares';
 
@@ -43,5 +45,7 @@ userRouter.post(
   multerUpload.single('avatar'),
   postEditProfileController
 );
+userRouter.get('/changePassword', loginOnly, getChangePasswordController);
+userRouter.post('/changePassword', loginOnly, postChangePasswordController);
 
 export default userRouter;
