@@ -7,7 +7,12 @@ export const resLocals = (req, res, next) => {
   next();
 };
 
-export const multerUpload = multer({ dest: 'uploads/' });
+export const multerUpload = multer({
+  dest: 'uploads/',
+  limits: {
+    fileSize: 1000000,
+  },
+});
 
 export const loginOnly = (req, res, next) => {
   if (req.session.isLoggedIn) {

@@ -11,6 +11,7 @@ export const getJoinController = (req, res) => {
 };
 
 export const postJoinController = async (req, res) => {
+  console.log(req.file);
   const email = req.body.joinEmail;
   const pwd = req.body.joinPassword;
   const pwd2 = req.body.joinPassword2;
@@ -23,8 +24,10 @@ export const postJoinController = async (req, res) => {
   }
   const birth = req.body.joinBirth;
   let avatar = '';
+  let avatarFilename = '';
   if (req.file) {
     avatar = '/' + req.file.path;
+    avatarFilename = req.file.originalname;
   } else {
     avatar = '';
   }
@@ -53,7 +56,7 @@ export const postJoinController = async (req, res) => {
   }
 
   try {
-    const password = await bcrypt.hash(pwd, 5);
+    const password = bcrypt.hashSync(pwd, 5);
     const join = await db.collection('users').insertOne({
       email,
       password,
@@ -61,6 +64,7 @@ export const postJoinController = async (req, res) => {
       gender,
       birth,
       avatar,
+      avatarFilename,
       socialOnly: false,
     });
     res.status(300).redirect('/user/login');
@@ -92,7 +96,6 @@ export const postLoginController = async (req, res) => {
       const hashingPassword = user.password;
       bcrypt.compare(currentPassword, hashingPassword, (error, result) => {
         if (!result) {
-          console.log(result);
           return res.status(403).render('login.ejs', {
             passwordError: `  👤 Oh!! It's Wrong Password. Please try again`,
           });
@@ -184,6 +187,7 @@ export const githubFinishController = async (req, res) => {
           gender,
           birth,
           avatar,
+          avatarFilename,
           socialOnly: true,
           oAuth: `Github`,
         });
@@ -266,6 +270,7 @@ export const googleFinishController = async (req, res) => {
           gender,
           birth,
           avatar,
+          avatarFilename,
           socialOnly: true,
           oAuth: `Google`,
         });
@@ -307,6 +312,19 @@ export const getEditProfileController = (req, res) => {
   res.status(200).render('editUserProfile.ejs');
 };
 
+const deleteAvatarFile = (path) => {
+  try {
+    const checkFileExist = fs.existsSync(path);
+    if (checkFileExist) {
+      fs.unlinkSync(path);
+    } else {
+      return;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const postEditProfileController = async (req, res) => {
   if (req.body.password) {
     console.log('password check');
@@ -323,9 +341,13 @@ export const postEditProfileController = async (req, res) => {
     }
   }
   try {
+    const avatarPath =
+      path.resolve(__dirname, '..', '..') + req.session.user.avatar;
     let avatar = '';
+    let avatarFilename = '';
     if (req.file) {
       avatar = '/' + req.file.path;
+      avatarFilename = req.file.originalname;
     } else {
       avatar = req.session.user.avatar;
     }
@@ -343,28 +365,20 @@ export const postEditProfileController = async (req, res) => {
             gender,
             birth,
             avatar,
+            avatarFilename,
             socialOnly: req.session.user.socialOnly,
             oAuth: req.session.user.oAuth,
           },
         }
       );
-      //DELETE OLD AVATAR IT's working//
-      const avatarPath =
-        path.resolve(__dirname, '..', '..') + req.session.user.avatar;
-      console.log(`path=`, avatarPath);
-      fs.unlink(avatarPath, (error) => {
-        if (error) {
-          throw error;
-        } else {
-          console.log(`File Delete`);
-        }
-      });
-
+      //=========DELETE OLD AVATAR================//
+      if (req.file) {
+        deleteAvatarFile(avatarPath);
+      }
       req.session.user = await db
         .collection('users')
         .findOne({ email: editEmail });
       req.flash('message', ` ✔ Profile has updated`);
-
       return res.status(300).redirect('/user/userProfile');
     } else {
       const emailCheck = await db
@@ -395,11 +409,16 @@ export const postEditProfileController = async (req, res) => {
             gender,
             birth,
             avatar,
+            avatarFilename,
             socialOnly: req.session.user.socialOnly,
             oAuth: req.session.user.oAuth,
           },
         }
       );
+      //=========DELETE OLD AVATAR================//
+      if (req.file) {
+        deleteAvatarFile(avatarPath);
+      }
       req.session.user = await db
         .collection('users')
         .findOne({ email: editEmail });
@@ -410,6 +429,7 @@ export const postEditProfileController = async (req, res) => {
     console.log(error);
   }
 };
+
 export const getChangePasswordController = (req, res) => {
   return res.status(200).render('changePassword');
 };

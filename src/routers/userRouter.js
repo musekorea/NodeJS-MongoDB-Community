@@ -1,4 +1,5 @@
 import express from 'express';
+import multer from 'multer';
 import {
   getJoinController,
   postJoinController,
@@ -20,12 +21,27 @@ import {
 import { multerUpload, loginOnly, logoutOnly } from '../middlewares';
 
 const userRouter = express.Router();
+const upload = multerUpload.single('avatar');
 
 userRouter.get('/join', logoutOnly, getJoinController);
 userRouter.post(
   '/join',
   logoutOnly,
-  multerUpload.single('avatar'),
+  function (req, res, next) {
+    upload(req, res, function (error) {
+      if (error instanceof multer.MulterError) {
+        console.log(`multer error`, error);
+        req.flash('multer', ` 🚫 Unbale to upload file larger than 1MB`);
+        return res.redirect('/user/join');
+      } else if (error) {
+        console.log(`nomral error`, error);
+        req.flash('multer', `File has some error`);
+        return res.redirect('user/join');
+      } else {
+        return next();
+      }
+    });
+  },
   postJoinController
 );
 userRouter.get('/login', logoutOnly, getLoginController);
