@@ -24,31 +24,34 @@ export const postJoinController = async (req, res) => {
   }
   const birth = req.body.joinBirth;
   let avatar = '';
-  let avatarFilename = '';
   if (req.file) {
     avatar = '/' + req.file.path;
-    avatarFilename = req.file.originalname;
   } else {
     avatar = '';
   }
   if (pwd !== pwd2) {
-    return res.status(403).render('join.ejs', {
-      passwordError: ` 🎯  Passwords don't match! Please Check`,
-    });
+    req.flash('passwordError', "🎯  Passwords don't match! Please Check");
+    return res.status(403).redirect('/user/join');
   }
 
   try {
     const user = await db.collection('users').findOne({ email });
     if (user) {
       console.log('EMAIL EXISTS');
-      res.locals.emailError = ` 😹 : Please try another email. This email already exists`;
-      return res.status(403).render('join.ejs');
+      req.flash(
+        'emailError',
+        '😹 : Please try another email. This email already exists'
+      );
+      return res.status(403).redirect('/user/join');
     } else {
       const nicknameCheck = await db.collection('users').findOne({ nickname });
       if (nicknameCheck) {
         console.log('NICKNAME EXISTS');
-        res.locals.nicknameError = ` 😹 : Please try another nickname. This nickname already exists`;
-        return res.status(300).render('join.ejs');
+        req.flash(
+          'nicknameError',
+          '😹 : Please try another nickname. This nickname already exists'
+        );
+        return res.status(403).redirect('/user/join');
       }
     }
   } catch (error) {
@@ -64,8 +67,8 @@ export const postJoinController = async (req, res) => {
       gender,
       birth,
       avatar,
-      avatarFilename,
       socialOnly: false,
+      //writeList: [],
     });
     res.status(300).redirect('/user/login');
   } catch (error) {
@@ -85,20 +88,23 @@ export const postLoginController = async (req, res) => {
   try {
     const user = await db.collection('users').findOne({ email });
     if (!user) {
-      return res.status(403).render('login.ejs', {
-        emailError: `  🙄 Email doesn't exist! Please try again.`,
-      });
+      req.flash('emailError', "🙄 Email doesn't exist! Please try again.");
+      return res.status(403).redirect('/user/login');
     } else if (user.socialOnly) {
-      return res.status(403).render('login.ejs', {
-        socialError: `🧘‍♀️ You already have a ${user.oAuth} Account. Please try ${user.oAuth} Login!`,
-      });
+      req.flash(
+        'socialError',
+        `🧘‍♀️ You already have a ${user.oAuth} Account. Please try ${user.oAuth} Login!`
+      );
+      return res.status(403).redirect('/user/login');
     } else {
       const hashingPassword = user.password;
       bcrypt.compare(currentPassword, hashingPassword, (error, result) => {
         if (!result) {
-          return res.status(403).render('login.ejs', {
-            passwordError: `  👤 Oh!! It's Wrong Password. Please try again`,
-          });
+          req.flash(
+            'passwordError',
+            "👤 Oh!! It's Wrong Password. Please try again"
+          );
+          return res.status(403).redirect('/user/login');
         } else {
           delete user.password;
           req.session.isLoggedIn = true;
@@ -187,7 +193,6 @@ export const githubFinishController = async (req, res) => {
           gender,
           birth,
           avatar,
-          avatarFilename,
           socialOnly: true,
           oAuth: `Github`,
         });
@@ -270,7 +275,6 @@ export const googleFinishController = async (req, res) => {
           gender,
           birth,
           avatar,
-          avatarFilename,
           socialOnly: true,
           oAuth: `Google`,
         });
@@ -337,17 +341,15 @@ export const postEditProfileController = async (req, res) => {
     console.log(result);
     if (!result) {
       req.flash('emailCheck', ` : 👮‍♀️ Password doesn't match!`);
-      return res.status(403).render('editUserProfile.ejs');
+      return res.status(403).redirect('/user/editProfile');
     }
   }
   try {
     const avatarPath =
       path.resolve(__dirname, '..', '..') + req.session.user.avatar;
     let avatar = '';
-    let avatarFilename = '';
     if (req.file) {
       avatar = '/' + req.file.path;
-      avatarFilename = req.file.originalname;
     } else {
       avatar = req.session.user.avatar;
     }
@@ -365,7 +367,6 @@ export const postEditProfileController = async (req, res) => {
             gender,
             birth,
             avatar,
-            avatarFilename,
             socialOnly: req.session.user.socialOnly,
             oAuth: req.session.user.oAuth,
           },
@@ -387,7 +388,7 @@ export const postEditProfileController = async (req, res) => {
         .toArray();
       if (emailCheck.length !== 0 && editEmail !== req.session.user.email) {
         req.flash('emailExist', ` ${editEmail} is already taken`);
-        return res.status(403).render('editUserProfile');
+        return res.status(403).redirect('/user/editProfile');
       }
       const nicknameCheck = await db
         .collection('users')
@@ -398,7 +399,7 @@ export const postEditProfileController = async (req, res) => {
         nickname !== req.session.user.nickname
       ) {
         req.flash('nicknameExist', ` ${nickname} is already taken`);
-        return res.status(403).render('editUserProfile');
+        return res.status(403).redirect('/user/editProfile');
       }
       const updateUser = await db.collection('users').updateOne(
         { email: req.session.user.email },
@@ -409,7 +410,6 @@ export const postEditProfileController = async (req, res) => {
             gender,
             birth,
             avatar,
-            avatarFilename,
             socialOnly: req.session.user.socialOnly,
             oAuth: req.session.user.oAuth,
           },

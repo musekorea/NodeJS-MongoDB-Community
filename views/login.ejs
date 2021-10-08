@@ -16,8 +16,8 @@
       >
         <div class="mb-3">
           <label for="email" class="form-label"
-            >Email <%if(locals.emailError){%>
-            <span class="message"><%=emailError%></span>
+            >Email <%if(locals.messages.emailError){%>
+            <span class="message"><%=locals.messages.emailError%></span>
             <%}%></label
           >
           <input
@@ -30,8 +30,8 @@
         </div>
         <div class="mb-3">
           <label for="password" class="form-label"
-            >Password <%if(locals.passwordError){%>
-            <span class="message"><%=passwordError%></span>
+            >Password <%if(locals.messages.passwordError){%>
+            <span class="message"><%=locals.messages.passwordError%></span>
             <%}%></label
           >
           <input
@@ -46,8 +46,8 @@
           <button type="submit" class="btn btn-primary">LOGIN</button>
           
         </div>
-        <%if(locals.socialError){%>
-        <h6 class="row mb-3" style="color: red"><%=socialError%></h4>
+        <%if(locals.messages.socialError){%>
+        <h6 class="row mb-3" style="color: red"><%=locals.messages.socialError%></h4>
         <%}%>
       </form>
     </div>

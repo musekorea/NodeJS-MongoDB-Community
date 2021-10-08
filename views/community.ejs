@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <%- include("./components/HEADS.ejs")%>
+    <title>Code Me : Schedule List</title>
+  </head>
+  <body>
+    <%- include("./components/NAVBAR.ejs")%>
+    <div class="container mt-3">
+      <h3 class="text-center">Community</h3>
+      <div class="mb-3" style="display: flex; justify-content: space-between; padding: 0 20px;"><span>sort by popular new</span>   <span>🔍 search</span> </div>
+<!-- ========POST LIST===================-->
+      <div class="list-group">
+        <%locals.posts.forEach((post)=>{%>
+          <%- include("./components/post.ejs", {post})%>  
+        <%})%>
+      </div>
+
+<!--============= PAGINATION============-->
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <a class="page-link">Previous</a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+          <a href="/community/write"><button type="button" class="btn btn-success" style="margin-left: 50px;">Write a Post</button></a>
+        </ul>
+  </body>
+</html>

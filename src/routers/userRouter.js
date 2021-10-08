@@ -58,7 +58,21 @@ userRouter.get('/editProfile', loginOnly, getEditProfileController);
 userRouter.post(
   '/editProfile',
   loginOnly,
-  multerUpload.single('avatar'),
+  function (req, res, next) {
+    upload(req, res, function (error) {
+      if (error instanceof multer.MulterError) {
+        console.log(`multer error`, error);
+        req.flash('multer', ` 🚫 Unbale to upload file larger than 1MB`);
+        return res.redirect('/user/join');
+      } else if (error) {
+        console.log(`nomral error`, error);
+        req.flash('multer', `File has some error`);
+        return res.redirect('user/join');
+      } else {
+        return next();
+      }
+    });
+  },
   postEditProfileController
 );
 userRouter.get('/changePassword', loginOnly, getChangePasswordController);

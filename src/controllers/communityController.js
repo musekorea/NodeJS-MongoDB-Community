@@ -1,38 +1,52 @@
 import { db } from '../db.js';
 let counter;
 
-export const writeController = (req, res) => {
+export const communityController = async (req, res) => {
+  try {
+    const posts = await db.collection('posts').find().toArray();
+    console.log(posts);
+    return res.status(200).render('community.ejs', { posts });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getWriteController = (req, res) => {
   return res.status(200).render(`write.ejs`);
 };
 
-export const newScheduleController = async (req, res) => {
-  const todo = req.body.todo;
-  const dueDate = req.body.dueDate;
+export const postWriteController = async (req, res) => {
+  const title = req.body.title;
+  const content = req.body.content;
+  const time = new Date();
+  const currentTime = time.getTime();
+  console.log(title, content, currentTime);
   try {
     counter = await db.collection('counter').findOne({ name: 'counter' });
-    const result = await db.collection('todos').insertOne({
+    const result = await db.collection('posts').insertOne({
       _id: counter.count + 1,
-      todo: todo,
-      date: dueDate,
+      title,
+      content,
+      time: currentTime,
+      user: req.session.user.nickname,
     });
     counter = await db
       .collection('counter')
       .updateOne({ name: 'counter' }, { $inc: { count: +1 } });
-    res.status(200).send('Fetch Success');
+    const user = await db
+      .collection('users')
+      .updateOne(
+        { email: req.session.user.email },
+        { $addToSet: { writeList: result.insertedId } }
+      );
+    const posts = await db.collection('posts').find().toArray();
+    req.session.posts = posts;
+    return res.status(300).redirect('/community/community');
   } catch (error) {
     console.log(error);
   }
 };
-
-export const listController = async (req, res) => {
-  try {
-    const results = await db.collection('todos').find().toArray();
-    return res.status(200).render('list.ejs', { results });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
+/* 
 export const descriptionController = async (req, res) => {
   try {
     const todo = await db
@@ -53,7 +67,7 @@ export const editController = async (req, res) => {
       .collection('todos')
       .findOne({ _id: Number(req.params.id) });
     if (todo === null) {
-      return res.status(300).redirect('/list');
+      return res.status(300).redirect('/community');
     }
     return res.status(200).render('edit.ejs', { todo });
   } catch (error) {
@@ -85,4 +99,4 @@ export const updateController = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-};
+}; */

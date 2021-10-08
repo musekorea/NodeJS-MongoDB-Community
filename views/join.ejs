@@ -17,8 +17,8 @@
       >
         <div class="col-md-6">
           <label for="joinEmail" class="form-label"
-            >Email <%if(locals.emailError){%>
-            <span class="message"><%=emailError%></span>
+            >Email <%if(locals.messages.emailError){%>
+            <span class="message"><%=locals.messages.emailError%></span>
             <%}%>
           </label>
           <input
@@ -31,8 +31,8 @@
         </div>
         <div class="col-md-6">
           <label for="joinNickname" class="form-label"
-            >Nickname <%if(locals.nicknameError){%>
-            <span class="message"><%=nicknameError%></span>
+            >Nickname <%if(locals.messages.nicknameError){%>
+            <span class="message"><%=locals.messages.nicknameError%></span>
             <%}%>
           </label>
           <input
@@ -55,8 +55,8 @@
         </div>
         <div class="col-md-6">
           <label for="joinPassword2" class="form-label"
-            >Password Confirm <%if(locals.passwordError){%>
-            <span class="message"><%=passwordError%></span>
+            >Password Confirm <%if(locals.messages.passwordError){%>
+            <span class="message"><%=messages.passwordError%></span>
             <%}%>
           </label>
           <input

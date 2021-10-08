@@ -7,7 +7,7 @@ import flash from 'express-flash';
 
 import rootRouter from './routers/rootRouter.js';
 import userRouter from './routers/userRouter.js';
-import todoRouter from './routers/todoRouter.js';
+import communityRouter from './routers/communityRouter.js';
 
 const app = express();
 
@@ -30,6 +30,6 @@ app.use(flash());
 
 app.use('/', rootRouter);
 app.use('/user', userRouter);
-app.use('/todo', loginOnly, todoRouter);
+app.use('/community', loginOnly, communityRouter);
 
 export default app;

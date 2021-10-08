@@ -2,35 +2,34 @@
   <head>
     <%- include("./components/HEADS.ejs")%>
     <title>Code Me : Write Schedule</title>
-    <script defer src="/js/write.js"></script>
   </head>
   <body>
     <%- include("./components/NAVBAR.ejs")%>
-    <div class="container">
-      <form id="scheduleForm" method="POST">
+    <div class="container mt-3">
+      <h3 class="text-center">Write a post</h3>
+      <form id="writeForm" method="POST">
         <div class="mb-3 mt-3">
-          <label for="schedule" class="form-label">Schedule</label>
+          <label for="schedule" class="form-label"><h5>TITLE</h5></label>
           <input
-            id="schedule"
+            id="title"
             type="text"
-            class="form-control"
-            placeholder="Write a schedule"
-            name="todo"
+            class="form-control mb-1"
+            placeholder="Write a title "
+            name="title"
             required
           />
+          <small class="text-muted">max 50</small>
         </div>
         <div class="mb-3">
-          <label for="formGroupExampleInput2" class="form-label"
-            >Due Date</label
-          >
-          <input
-            id="dueDate"
-            type="date"
+          <label for="content"><h5>Content</h5></label>
+          <textarea
             class="form-control"
-            placeholder="asdf"
-            name="dueDate"
+            rows="5"
+            name="content"
+            id="content"
+            placeholder="Write a content"
             required
-          />
+          ></textarea>
         </div>
         <button type="submit" class="btn btn-success">SUBMIT</button>
       </form>
