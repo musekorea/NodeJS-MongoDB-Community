@@ -53,7 +53,7 @@ userRouter.get('/google/start', logoutOnly, googleStartController);
 userRouter.get('/google/callback', logoutOnly, googleFinishController);
 userRouter.get('/wechat/start', logoutOnly, wechatStartController);
 userRouter.get('/wechat/callback', logoutOnly, wechatFinishController);
-userRouter.get('/userProfile', loginOnly, getUserProfileController);
+userRouter.get('/userProfile/:user', getUserProfileController);
 userRouter.get('/editProfile', loginOnly, getEditProfileController);
 userRouter.post(
   '/editProfile',

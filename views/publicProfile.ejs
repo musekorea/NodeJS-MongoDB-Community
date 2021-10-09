@@ -1,7 +1,7 @@
 <html>
   <head>
     <%- include("./components/HEADS.ejs")%>
-    <title>Code Me : User Profile</title>
+    <title>Code Me : publicUser Profile</title>
   </head>
   <body>
     <%- include("./components/NAVBAR.ejs")%>
@@ -9,11 +9,13 @@
       <%if(locals.messages.message){%>
       <p class="flashMessage"><%=locals.messages.message%></p>
       <%}%>
-      <h2 class="text-center mb-3"><%=locals.user.nickname%>'s Profile</h2>
+      <h2 class="text-center mb-3">
+        <%=locals.publicUser.nickname%>'s Profile
+      </h2>
       <ul class="list-group mb-3">
-        <%if(locals.user.avatar){%>
+        <%if(locals.publicUser.avatar){%>
         <img
-          src="<%=locals.user.avatar%>"
+          src="<%=locals.publicUser.avatar%>"
           class="mx-auto d-block mb-3"
           alt="avatar"
           style="width: 150px; border-radius: 20px"
@@ -35,7 +37,7 @@
             "
             >NICKNAME</span
           >
-          <%=locals.user.nickname%>
+          <%=locals.publicUser.nickname%>
         </li>
         <li class="list-group-item">
           <span
@@ -46,7 +48,7 @@
             "
             >EMAIL</span
           >
-          <%=locals.user.email%>
+          <%=locals.publicUser.email%>
         </li>
         <li class="list-group-item">
           <span
@@ -57,7 +59,7 @@
             "
             >BIRTHDAY</span
           >
-          <%=locals.user.birth?locals.user.birth:`🚧 null`%>
+          <%=locals.publicUser.birth?locals.publicUser.birth:`🚧 null`%>
         </li>
         <li class="list-group-item">
           <span
@@ -68,7 +70,7 @@
             "
             >GENDER</span
           >
-          <%=locals.user.gender?locals.user.gender:`🚧 null`%>
+          <%=locals.publicUser.gender?locals.publicUser.gender:`🚧 null`%>
         </li>
         <li class="list-group-item">
           <span
@@ -84,14 +86,6 @@
           </span>
         </li>
       </ul>
-      <%#if(locals.user.nickname===owner){%>
-      <a href="/user/editProfile"
-        ><button type="button" class="btn btn-danger">EDIT PROFILE</button>
-      </a>
-      <a href="/user/changePassword"
-        ><button class="btn btn-dark">&rarr; CHANGE PASSWORD</button></a
-      >
-      <%#}%>
     </div>
   </body>
 </html>

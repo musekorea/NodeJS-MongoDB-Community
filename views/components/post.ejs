@@ -1,12 +1,16 @@
 <a
-  href="#"
+  href="/community/post/<%=locals.post._id%>"
   class="list-group-item list-group-item-action mb-3"
-  style="border: 1px solid rgba(90, 40, 40, 0.3); border-radius: 20px"
+  style="
+    border: 1px solid rgba(90, 40, 40, 0.3);
+    border-radius: 20px;
+    box-shadow: 6px 6px 6px rgba(0, 0, 0, 0.2);
+  "
 >
   <div class="d-flex w-100 justify-content-between">
     <h5 class="mb-1"><%=post.title%></h5>
     <img
-      src="<%=locals.user.avatar%>"
+      src="<%=locals.post.avatar%>"
       class="text-muted"
       style="
         width: 60px;

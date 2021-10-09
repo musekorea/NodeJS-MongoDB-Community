@@ -30,6 +30,6 @@ app.use(flash());
 
 app.use('/', rootRouter);
 app.use('/user', userRouter);
-app.use('/community', loginOnly, communityRouter);
+app.use('/community', communityRouter);
 
 export default app;

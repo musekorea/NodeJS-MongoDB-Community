@@ -19,7 +19,6 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/">Home</a>
         </li>
-        <%if(locals.isLoggedIn){%>
         <li class="nav-item">
           <a
             class="nav-link active"
@@ -28,11 +27,13 @@
             >Community</a
           >
         </li>
+
+        <%if(locals.isLoggedIn){%>
         <li class="nav-item">
           <a
             class="nav-link active"
             aria-current="page"
-            href="/user/userProfile"
+            href="/user/userProfile/<%=locals.user.nickname%>"
           >
             <%if(locals.user.avatar===""){%>
             <span>👽 <%=locals.user.nickname%></span>

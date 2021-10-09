@@ -3,20 +3,17 @@ import {
   communityController,
   getWriteController,
   postWriteController,
-  descriptionController,
-  editController,
-  deleteController,
-  updateController,
+  postController,
+  commentController,
 } from '../controllers/communityController';
+import { loginOnly } from '../middlewares';
 
 const communityRouter = express.Router();
 
 communityRouter.get('/community', communityController);
-communityRouter.get('/write', getWriteController);
-communityRouter.post('/write', postWriteController);
-/* communityRouter.get('/description/:id', descriptionController);
-communityRouter.get('/edit/:id', editController);
-communityRouter.delete('/delete', deleteController);
-communityRouter.patch('/update/:id', updateController); */
+communityRouter.get('/write', loginOnly, getWriteController);
+communityRouter.post('/write', loginOnly, postWriteController);
+communityRouter.get('/post/:id', postController);
+communityRouter.post('/comments', commentController);
 
 export default communityRouter;

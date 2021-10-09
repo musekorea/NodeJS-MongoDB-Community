@@ -3,6 +3,7 @@ import multer from 'multer';
 export const resLocals = (req, res, next) => {
   res.locals.user = req.session.user;
   res.locals.posts = req.session.posts;
+  res.locals.owner = req.session.owner;
   res.locals.isLoggedIn = Boolean(req.session.isLoggedIn);
   res.locals.socialOnly = Boolean(req.session.socialOnly);
   next();

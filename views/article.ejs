@@ -1,0 +1,112 @@
+<html>
+  <head>
+    <%- include("./components/HEADS.ejs")%>
+    <script defer src="/js/comments.js"></script>
+    <title>Code Me : <%=locals.post.title%></title>
+  </head>
+  <body style="overflow-y: scroll">
+    <%- include("./components/NAVBAR.ejs")%>
+    <div id="articleContainer" class="container" style="width: 60%">
+      <div
+        class="list-group-item list-group-item-action mb-3 mt-5"
+        style="
+          border: 1px solid rgba(90, 40, 40, 0.3);
+          border-radius: 20px;
+          background-color: ivory;
+          box-shadow: 6px 6px 6px rgba(0, 0, 0, 0.2);
+          position: relative;
+        "
+      >
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1"><%=locals.post.title%></h5>
+          <a href="/user/userProfile/<%=locals.post.user%>">
+            <img
+              src="<%=locals.post.avatar%>"
+              class="text-muted"
+              style="
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                position: absolute;
+                right: 20px;
+              "
+          /></a>
+        </div>
+        <p class="mb-3 text-muted">
+          by<span style="margin-right: 20px; font-weight: bolder">
+            <a
+              href="/user/userProfile/<%=locals.post.user%>"
+              style="color: indianred"
+              ><%=locals.post.user%></a
+            >
+          </span>
+          > ><span style="margin-right: 20px">• 4 hours ago </span>
+          <span style="margin-right: 20px">💬 2</span>
+          <span style="margin-right: 10px">👍10 </span
+          ><span style="margin-right: 10px">👎3</span> <span>👁‍🗨30 views</span>
+        </p>
+        <!-- CONTENT -->
+        <p class="mt-4" style="white-space: pre"><%=locals.post.content%></p>
+        <a href="/community/community">
+          <button
+            class="btn"
+            style="
+              position: fixed;
+              left: 10%;
+              top: 20%;
+              text-decoration: underline;
+              color: indianred;
+            "
+          >
+            ⬅Go Back
+          </button></a
+        >
+      </div>
+
+      <!-- ========ADD COMMENTS===================== -->
+      <form
+        action="#"
+        id="commentForm"
+        method="post"
+        class="hide"
+        data-avatar="<%=locals.user.avatar%>"
+        data-user="<%=locals.user.nickname%>"
+      >
+        <div class="form-floating">
+          <textarea
+            class="form-control mb-3"
+            placeholder="Leave a comment here"
+            id="commentInput"
+            name="commentInput"
+          ></textarea>
+          <label for="commentInput" class="text-muted"
+            >Leave a comment here</label
+          >
+          <button id="commentSubmitBtn" type="submit" class="btn btn-primary">
+            Write a comment
+          </button>
+          <button id="commentCancelBtn" type="button" class="btn btn-secondary">
+            Cancel
+          </button>
+        </div>
+      </form>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <%if(isLoggedIn) {%>
+        <a id="commentBtn"
+          ><button class="btn btn-warning me-md-2" type="button">
+            Add a comment
+          </button></a
+        >
+        <%if(locals.user.nickname!==locals.post.user){%>
+        <span></span>
+        <%}else{%>
+        <button class="btn btn-danger" type="button">Edit</button>
+        <%}%> <%}else{%>
+        <span></span>
+        <%}%>
+      </div>
+      <!--========= COMMETNS================ -->
+      <p>5 comments</p>
+    </div>
+  </body>
+</html>

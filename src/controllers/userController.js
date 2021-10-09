@@ -27,7 +27,7 @@ export const postJoinController = async (req, res) => {
   if (req.file) {
     avatar = '/' + req.file.path;
   } else {
-    avatar = '';
+    avatar = '/images/noProfile.png';
   }
   if (pwd !== pwd2) {
     req.flash('passwordError', "🎯  Passwords don't match! Please Check");
@@ -184,7 +184,12 @@ export const githubFinishController = async (req, res) => {
         const nickname = userJson.login;
         const gender = '';
         const birth = '';
-        const avatar = userJson.avatar_url;
+        let avatar = '';
+        if (userJson.avatar_url) {
+          avatar = userJson.avatar_url;
+        } else {
+          avatar = '/images/noProfile.png';
+        }
         const password = '';
         const addUser = await db.collection('users').insertOne({
           email,
@@ -266,7 +271,12 @@ export const googleFinishController = async (req, res) => {
         const nickname = `${userJson.family_name} ${userJson.given_name}`;
         const gender = '';
         const birth = '';
-        const avatar = userJson.picture;
+        let avatar = '';
+        if (userJson.userJson.avatar_url) {
+          avatar = userJson.picture;
+        } else {
+          avatar = '/images/noProfile.png';
+        }
         const password = '';
         const addUser = await db.collection('users').insertOne({
           email,
@@ -308,8 +318,20 @@ export const wechatFinishController = (req, res) => {
 };
 
 //===========USER PROFILE==================
-export const getUserProfileController = (req, res) => {
-  return res.status(200).render('userProfile.ejs');
+export const getUserProfileController = async (req, res) => {
+  const owner = req.params.user;
+  let publicUser;
+  if (req.session.isLoggedIn) {
+    if (req.session.user.nickname === owner) {
+      return res.status(200).render('userProfile.ejs');
+    } else {
+      publicUser = await db.collection('users').findOne({ nickname: owner });
+      return res.status(200).render('publicProfile.ejs', { publicUser });
+    }
+  } else {
+    publicUser = await db.collection('users').findOne({ nickname: owner });
+    return res.status(200).render('publicProfile.ejs', { publicUser });
+  }
 };
 
 export const getEditProfileController = (req, res) => {
@@ -341,7 +363,7 @@ export const postEditProfileController = async (req, res) => {
     console.log(result);
     if (!result) {
       req.flash('emailCheck', ` : 👮‍♀️ Password doesn't match!`);
-      return res.status(403).redirect('/user/editProfile');
+      return res.status(403).redirect(`/user/editProfile`);
     }
   }
   try {
@@ -380,7 +402,22 @@ export const postEditProfileController = async (req, res) => {
         .collection('users')
         .findOne({ email: editEmail });
       req.flash('message', ` ✔ Profile has updated`);
-      return res.status(300).redirect('/user/userProfile');
+      //=======USER'S POSTS AVATAR UPDATE========//
+      const userPosts = await db
+        .collection('posts')
+        .find({ user: req.session.user.nickname })
+        .toArray();
+      userPosts.forEach(async (post) => {
+        await db
+          .collection('posts')
+          .updateOne(
+            { _id: Number(post._id) },
+            { $set: { avatar: req.session.user.avatar } }
+          );
+      });
+      return res
+        .status(300)
+        .redirect(`/user/userProfile/${req.session.user.nickname}`);
     } else {
       const emailCheck = await db
         .collection('users')
@@ -388,18 +425,19 @@ export const postEditProfileController = async (req, res) => {
         .toArray();
       if (emailCheck.length !== 0 && editEmail !== req.session.user.email) {
         req.flash('emailExist', ` ${editEmail} is already taken`);
-        return res.status(403).redirect('/user/editProfile');
+        return res.status(403).redirect(`/user/editProfile`);
       }
       const nicknameCheck = await db
         .collection('users')
         .find({ nickname })
         .toArray();
+
       if (
         nicknameCheck.length !== 0 &&
         nickname !== req.session.user.nickname
       ) {
         req.flash('nicknameExist', ` ${nickname} is already taken`);
-        return res.status(403).redirect('/user/editProfile');
+        return res.status(403).redirect(`/user/editProfile`);
       }
       const updateUser = await db.collection('users').updateOne(
         { email: req.session.user.email },
@@ -423,7 +461,22 @@ export const postEditProfileController = async (req, res) => {
         .collection('users')
         .findOne({ email: editEmail });
       req.flash('message', ` ✔ Profile has updated`);
-      return res.status(300).redirect('/user/userProfile');
+      //=======USER'S POSTS AVATAR UPDATE========//
+      const userPosts = await db
+        .collection('posts')
+        .find({ user: req.session.user.nickname })
+        .toArray();
+      userPosts.forEach(async (post) => {
+        await db
+          .collection('posts')
+          .updateOne(
+            { _id: Number(post._id) },
+            { $set: { avatar: req.session.user.avatar } }
+          );
+      });
+      return res
+        .status(300)
+        .redirect(`/user/userProfile/${req.session.user.nickname}`);
     }
   } catch (error) {
     console.log(error);

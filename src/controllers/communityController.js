@@ -1,4 +1,5 @@
 import { db } from '../db.js';
+
 let counter;
 
 export const communityController = async (req, res) => {
@@ -29,6 +30,7 @@ export const postWriteController = async (req, res) => {
       content,
       time: currentTime,
       user: req.session.user.nickname,
+      avatar: req.session.user.avatar,
     });
     counter = await db
       .collection('counter')
@@ -46,21 +48,25 @@ export const postWriteController = async (req, res) => {
     console.log(error);
   }
 };
-/* 
-export const descriptionController = async (req, res) => {
+
+export const postController = async (req, res) => {
   try {
-    const todo = await db
-      .collection('todos')
+    const post = await db
+      .collection('posts')
       .findOne({ _id: Number(req.params.id) });
-    if (todo === null) {
-      return res.status(500).send(`Not Found Data`);
-    }
-    return res.status(200).render('description.ejs', { todo });
+    console.log(post.content);
+    return res.status(200).render('article.ejs', { post });
   } catch (error) {
     console.log(error);
   }
 };
 
+export const commentController = async (req, res) => {
+  console.log(req.body);
+  res.sendStatus(200);
+};
+
+/* 
 export const editController = async (req, res) => {
   try {
     const todo = await db

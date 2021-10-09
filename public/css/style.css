@@ -18,6 +18,12 @@
 a {
   text-decoration: none;
 }
+a:link {
+  text-decoration: none;
+}
+a:visited {
+  text-decoration: none;
+}
 @keyframes flashDisappear {
   0% {
     opacity: 0.7;
@@ -61,4 +67,7 @@ a {
   background-color: darkseagreen;
   border-radius: 20px;
   animation: flashDisappear 4s ease-in-out forwards;
+}
+.hide {
+  display: none;
 }
