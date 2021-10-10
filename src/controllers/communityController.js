@@ -7,6 +7,11 @@ export const communityController = async (req, res) => {
     const posts = await db.collection('posts').find().toArray();
     posts.forEach((post) => {
       post.createdAt = createdAt(post.createdAt);
+      if (post.comments) {
+        post.commentsNumber = post.comments.length;
+      } else {
+        post.commentsNumber = 0;
+      }
     });
     return res.status(200).render('community.ejs', { posts });
   } catch (error) {
@@ -31,6 +36,7 @@ export const postWriteController = async (req, res) => {
       createdAt: currentTime,
       user: req.session.user.nickname,
       avatar: req.session.user.avatar,
+      views: 0,
     });
     counter = await db
       .collection('counter')
@@ -58,25 +64,23 @@ const createdAt = (oldTime) => {
   if (calTime < 60) {
     resultTime = calTime;
     return (resultCreatedAt =
-      resultTime === 1
-        ? `${resultTime} minute ago`
-        : `${resultTime} minutes ago`);
+      resultTime <= 1 ? `1 minute ago` : `${resultTime} minutes ago`);
   } else if (calTime >= 60 && calTime < 60 * 24) {
     resultTime = Math.floor(calTime / 60);
     return (resultCreatedAt =
-      resultTime === 1 ? `${resultTime} hour ago` : `${resultTime} hours ago`);
+      resultTime <= 1 ? `1 hour ago` : `${resultTime} hours ago`);
   } else if (calTime >= 60 * 24 && calTime < 60 * 24 * 30) {
     resultTime = Math.floor(calTime / (60 * 24));
     return (resultCreatedAt =
-      resultTime === 1 ? `${resultTime} day ago` : `${resultTime} day ago`);
+      resultTime <= 1 ? `1 day ago` : `${resultTime} day ago`);
   } else if (calTime >= 60 * 24 * 30 && calTime < 60 * 24 * 30 * 12) {
     resultTime = Math.floor(calTime / (60 * 24 * 30));
     return (resultCreatedAt =
-      resultTime === 1 ? `${resultTime} day ago` : `${resultTime} days ago`);
+      resultTime <= 1 ? `1 month ago` : `${resultTime} months ago`);
   } else {
     resultTime = Math.floor(calTime / (60 * 24 * 30 * 12));
     return (resultCreatedAt =
-      resultTime === 1 ? `${resultTime} year ago` : `${resultTime} years ago`);
+      resultTime <= 1 ? `1 year ago` : `${resultTime} years ago`);
   }
 };
 
@@ -86,6 +90,7 @@ export const getArticleController = async (req, res) => {
       .collection('posts')
       .findOne({ _id: Number(req.params.id) });
     post.createdAt = createdAt(post.createdAt);
+
     const comments = await db
       .collection('comments')
       .find({ postID: req.params.id })
@@ -93,6 +98,13 @@ export const getArticleController = async (req, res) => {
     comments.forEach((comment) => {
       comment.createdAt = createdAt(comment.createdAt);
     });
+
+    const viewsUpdate = await db.collection('posts').updateOne(
+      { _id: Number(req.params.id) },
+      {
+        $inc: { views: +1 },
+      }
+    );
     return res.status(200).render('article.ejs', { post, comments });
   } catch (error) {
     console.log(error);

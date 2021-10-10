@@ -21,7 +21,8 @@ const confirmPassword = async (e) => {
     if (pwdFetch.status === 403) {
       return window.location.replace(`/user/changePassword`);
     } else if (pwdFetch.status === 200) {
-      return window.location.replace(`/user/userProfile`);
+      const body = await pwdFetch.json();
+      return window.location.replace(`/user/userProfile/${body.nickname}`);
     }
   }
 };

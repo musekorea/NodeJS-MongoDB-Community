@@ -513,7 +513,7 @@ export const postChangePasswordController = async (req, res) => {
             { $set: { password: await bcrypt.hash(newPassword, 5) } }
           );
         req.flash('message', '✔ Password Updated');
-        res.sendStatus(200);
+        res.status(200).send({ nickname: req.session.user.nickname });
       } else {
         req.flash('pwdCheck', " ✋ Password doesn't match");
         return res.sendStatus(403);

@@ -40,12 +40,16 @@
               ><%=locals.post.user%></a
             >
           </span>
-          > ><span style="margin-right: 20px"
-            >• <%=locals.post.createdAt%>
-          </span>
-          <span style="margin-right: 20px">💬 2</span>
+          <span style="margin-right: 20px">• <%=locals.post.createdAt%> </span>
+          <span style="margin-right: 20px"
+            >💬
+            <span class="commentsNumber"
+              ><%=locals.comments.length%></span
+            ></span
+          >
           <span style="margin-right: 10px">👍10 </span
-          ><span style="margin-right: 10px">👎3</span> <span>👁‍🗨30 views</span>
+          ><span style="margin-right: 10px">👎3</span>
+          <span>👁‍🗨<%=locals.post.views%> views</span>
         </p>
         <!-- CONTENT -->
         <p class="mt-4" style="white-space: pre"><%=locals.post.content%></p>
@@ -108,8 +112,17 @@
         <%}%>
       </div>
       <!--========= COMMETNS================ -->
-      <p>5 comments</p>
-      <%locals.comments.forEach((comment)=>{%>
+      <%if(locals.comments.length<=1){%>
+      <p>
+        <span class="commentsNumber"> <%=locals.comments.length%> </span>
+        comment
+      </p>
+      <%}else{%>
+      <p>
+        <span class="commentsNumber"> <%=locals.comments.length%> </span>
+        comment
+      </p>
+      <%}%> <%locals.comments.forEach((comment)=>{%>
       <%-include("./components/COMMENTS.ejs",{comment})%> <%})%>
     </div>
   </body>

@@ -44,7 +44,6 @@ const cancelComment = (e) => {
 const submitComment = async (e) => {
   const currentURL = window.location.href.split('/');
   const postID = currentURL[currentURL.length - 1];
-
   e.preventDefault();
   const comment = commentInput.value;
   try {
@@ -53,11 +52,14 @@ const submitComment = async (e) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ comment, postID }),
     });
-
     if (fetchComment.status === 200) {
       console.log(`success`);
       cancelComment();
       createComment(comment);
+      const commentsNumbers = document.querySelectorAll('.commentsNumber');
+      commentsNumbers.forEach((commentNumber) => {
+        commentNumber.innerHTML = Number(commentNumber.innerHTML) + 1;
+      });
     }
   } catch (error) {
     console.log(error);
