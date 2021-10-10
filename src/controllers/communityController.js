@@ -142,6 +142,10 @@ export const commentController = async (req, res) => {
   } catch (error) {}
 };
 
+export const addGoodController = (req, res) => {
+  console.log(req.body);
+};
+
 /* 
 export const editController = async (req, res) => {
   try {

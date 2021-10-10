@@ -1,6 +1,7 @@
 <html>
   <head>
     <%- include("./components/HEADS.ejs")%>
+    <script defer src="/js/article.js"></script>
     <script defer src="/js/comments.js"></script>
     <title>Code Me : <%=locals.post.title%></title>
   </head>
@@ -47,8 +48,16 @@
               ><%=locals.comments.length%></span
             ></span
           >
-          <span style="margin-right: 10px">👍10 </span
-          ><span style="margin-right: 10px">👎3</span>
+          <span style="margin-right: 10px">
+            <a class="likeBtns" id="goodBtn" href="#"
+              ><span>👍</span> <span id="goodNum">10</span></a
+            >
+          </span>
+          <span style="margin-right: 10px">
+            <a class="likeBtns" id="badBtn" href="#"
+              ><span>👎</span> <span id="badNum">3</span></a
+            >
+          </span>
           <span>👁‍🗨<%=locals.post.views%> views</span>
         </p>
         <!-- CONTENT -->
