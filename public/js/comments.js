@@ -5,6 +5,7 @@ const commentCancelBtn = document.querySelector('#commentCancelBtn');
 const commentInput = document.querySelector('#commentInput');
 
 const createComment = (comment) => {
+  const dataSet = document.querySelector('#dataSet');
   const commentDiv = document.createElement('div');
   commentDiv.className = `mb-3`;
   commentDiv.style = `
@@ -19,8 +20,8 @@ const createComment = (comment) => {
   const commentHeader = document.createElement('div');
   commentHeader.className = `mb-3`;
   const commentAvatar = document.createElement('img');
-  commentHeader.innerHTML = `${commentForm.dataset.user} | 6 hours ago`;
-  commentAvatar.src = commentForm.dataset.avatar;
+  commentHeader.innerHTML = `${dataSet.dataset.user} | 6 hours ago`;
+  commentAvatar.src = dataSet.dataset.avatar;
   commentAvatar.style = `width:30px;height:30px;border-radius:50%;margin-right:15px`;
   commentHeader.prepend(commentAvatar);
   const commentBody = document.createElement('p');
@@ -41,13 +42,16 @@ const cancelComment = (e) => {
 };
 
 const submitComment = async (e) => {
+  const currentURL = window.location.href.split('/');
+  const postID = currentURL[currentURL.length - 1];
+
   e.preventDefault();
   const comment = commentInput.value;
   try {
     const fetchComment = await fetch(`/community/comments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ comment }),
+      body: JSON.stringify({ comment, postID }),
     });
 
     if (fetchComment.status === 200) {

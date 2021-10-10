@@ -5,7 +5,9 @@ let counter;
 export const communityController = async (req, res) => {
   try {
     const posts = await db.collection('posts').find().toArray();
-    console.log(posts);
+    posts.forEach((post) => {
+      post.createdAt = createdAt(post.createdAt);
+    });
     return res.status(200).render('community.ejs', { posts });
   } catch (error) {
     console.log(error);
@@ -19,16 +21,14 @@ export const getWriteController = (req, res) => {
 export const postWriteController = async (req, res) => {
   const title = req.body.title;
   const content = req.body.content;
-  const time = new Date();
-  const currentTime = time.getTime();
-  console.log(title, content, currentTime);
+  const currentTime = new Date().getTime();
   try {
     counter = await db.collection('counter').findOne({ name: 'counter' });
     const result = await db.collection('posts').insertOne({
       _id: counter.count + 1,
       title,
       content,
-      time: currentTime,
+      createdAt: currentTime,
       user: req.session.user.nickname,
       avatar: req.session.user.avatar,
     });
@@ -49,21 +49,85 @@ export const postWriteController = async (req, res) => {
   }
 };
 
-export const postController = async (req, res) => {
+const createdAt = (oldTime) => {
+  const currentTime = Math.floor(new Date().getTime() / (1000 * 60));
+  const targetTime = Math.floor(Number(oldTime / (1000 * 60)));
+  const calTime = currentTime - targetTime;
+  let resultTime;
+  let resultCreatedAt;
+  if (calTime < 60) {
+    resultTime = calTime;
+    return (resultCreatedAt =
+      resultTime === 1
+        ? `${resultTime} minute ago`
+        : `${resultTime} minutes ago`);
+  } else if (calTime >= 60 && calTime < 60 * 24) {
+    resultTime = Math.floor(calTime / 60);
+    return (resultCreatedAt =
+      resultTime === 1 ? `${resultTime} hour ago` : `${resultTime} hours ago`);
+  } else if (calTime >= 60 * 24 && calTime < 60 * 24 * 30) {
+    resultTime = Math.floor(calTime / (60 * 24));
+    return (resultCreatedAt =
+      resultTime === 1 ? `${resultTime} day ago` : `${resultTime} day ago`);
+  } else if (calTime >= 60 * 24 * 30 && calTime < 60 * 24 * 30 * 12) {
+    resultTime = Math.floor(calTime / (60 * 24 * 30));
+    return (resultCreatedAt =
+      resultTime === 1 ? `${resultTime} day ago` : `${resultTime} days ago`);
+  } else {
+    resultTime = Math.floor(calTime / (60 * 24 * 30 * 12));
+    return (resultCreatedAt =
+      resultTime === 1 ? `${resultTime} year ago` : `${resultTime} years ago`);
+  }
+};
+
+export const getArticleController = async (req, res) => {
   try {
     const post = await db
       .collection('posts')
       .findOne({ _id: Number(req.params.id) });
-    console.log(post.content);
-    return res.status(200).render('article.ejs', { post });
+    post.createdAt = createdAt(post.createdAt);
+    const comments = await db
+      .collection('comments')
+      .find({ postID: req.params.id })
+      .toArray();
+    comments.forEach((comment) => {
+      comment.createdAt = createdAt(comment.createdAt);
+    });
+    return res.status(200).render('article.ejs', { post, comments });
   } catch (error) {
     console.log(error);
   }
 };
 
 export const commentController = async (req, res) => {
-  console.log(req.body);
-  res.sendStatus(200);
+  const postID = req.body.postID;
+  const content = req.body.comment;
+  try {
+    const commentDB = await db.collection('comments').insertOne({
+      postID,
+      content,
+      owner: req.session.user.nickname,
+      avatar: req.session.user.avatar,
+      createdAt: new Date().getTime(),
+    });
+    const commentID = commentDB.insertedId;
+    console.log(commentID);
+    const userDB = await db
+      .collection('users')
+      .updateOne(
+        { email: req.session.user.email },
+        { $addToSet: { comments: commentID } }
+      );
+    const postDB = await db.collection('posts').updateOne(
+      { _id: Number(postID) },
+      {
+        $addToSet: {
+          comments: commentID,
+        },
+      }
+    );
+    res.sendStatus(200);
+  } catch (error) {}
 };
 
 /* 

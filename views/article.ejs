@@ -40,7 +40,9 @@
               ><%=locals.post.user%></a
             >
           </span>
-          > ><span style="margin-right: 20px">• 4 hours ago </span>
+          > ><span style="margin-right: 20px"
+            >• <%=locals.post.createdAt%>
+          </span>
           <span style="margin-right: 20px">💬 2</span>
           <span style="margin-right: 10px">👍10 </span
           ><span style="margin-right: 10px">👎3</span> <span>👁‍🗨30 views</span>
@@ -64,14 +66,14 @@
       </div>
 
       <!-- ========ADD COMMENTS===================== -->
-      <form
-        action="#"
-        id="commentForm"
-        method="post"
-        class="hide"
+      <%if(locals.isLoggedIn){%>
+      <span
+        id="dataSet"
         data-avatar="<%=locals.user.avatar%>"
         data-user="<%=locals.user.nickname%>"
-      >
+      ></span>
+      <%}%>
+      <form action="#" id="commentForm" method="post" class="hide">
         <div class="form-floating">
           <textarea
             class="form-control mb-3"
@@ -107,6 +109,8 @@
       </div>
       <!--========= COMMETNS================ -->
       <p>5 comments</p>
+      <%locals.comments.forEach((comment)=>{%>
+      <%-include("./components/COMMENTS.ejs",{comment})%> <%})%>
     </div>
   </body>
 </html>
