@@ -1,21 +1,22 @@
 <html>
   <head>
     <%- include("./components/HEADS.ejs")%>
-    <title>Code Me : Write Post</title>
+    <script defer src="/js/editArticle.js"></script>
+    <title>Code Me : Edit Schedule</title>
   </head>
   <body>
     <%- include("./components/NAVBAR.ejs")%>
     <div class="container mt-3">
-      <h3 class="text-center">Write a post</h3>
-      <form id="writeForm" method="POST">
+      <h3 class="text-center">Edit a post</h3>
+      <form id="editArticleForm">
         <div class="mb-3 mt-3">
           <label for="schedule" class="form-label"><h5>TITLE</h5></label>
           <input
-            id="title"
+            id="editArticleTitle"
             type="text"
             class="form-control mb-1"
-            placeholder="Write a title "
-            name="title"
+            value="<%=locals.postData.title%>"
+            name="editArticleTitle"
             required
           />
           <small class="text-muted">max 50</small>
@@ -26,13 +27,14 @@
             class="form-control"
             rows="5"
             name="content"
-            id="content"
-            placeholder="Write a content"
+            id="editArticleContent"
             required
             wrap="hard"
-          ></textarea>
+          >
+<%=locals.postData.content%></textarea
+          >
         </div>
-        <button type="submit" class="btn btn-success">SUBMIT</button>
+        <button type="submit" class="btn btn-success">EDIT DONE</button>
       </form>
     </div>
   </body>

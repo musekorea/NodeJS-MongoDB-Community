@@ -1,8 +1,0 @@
-      <!--       <%if(locals.user.nickname===owner){%>
-      <a href="/user/editProfile"
-        ><button type="button" class="btn btn-danger">EDIT PROFILE</button>
-      </a>
-      <a href="/user/changePassword"
-        ><button class="btn btn-dark">&rarr; CHANGE PASSWORD</button></a
-      >
-      <%}%> -->

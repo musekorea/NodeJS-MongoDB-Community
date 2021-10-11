@@ -16,6 +16,7 @@ export const communityController = async (req, res) => {
     return res.status(200).render('community.ejs', { posts });
   } catch (error) {
     console.log(error);
+    return res.status(500).redirect('/error');
   }
 };
 
@@ -52,6 +53,7 @@ export const postWriteController = async (req, res) => {
     return res.status(300).redirect('/community/community');
   } catch (error) {
     console.log(error);
+    return res.status(500).redirect('/error');
   }
 };
 
@@ -108,6 +110,35 @@ export const getArticleController = async (req, res) => {
     return res.status(200).render('article.ejs', { post, comments });
   } catch (error) {
     console.log(error);
+    return res.status(500).redirect('/error');
+  }
+};
+
+export const getEditArticleController = async (req, res) => {
+  const postID = req.params.id;
+  const postData = await db
+    .collection('posts')
+    .findOne({ _id: Number(postID) });
+  console.log(postData);
+  return res.status(200).render('editArticle.ejs', { postData });
+};
+export const putEditArticleController = async (req, res) => {
+  try {
+    const postID = req.params.id;
+    const putData = await db.collection('posts').updateOne(
+      { _id: Number(postID) },
+      {
+        $set: {
+          title: req.body.title,
+          content: req.body.content,
+          createdAt: new Date().getTime(),
+        },
+      }
+    );
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).redirect('/error');
   }
 };
 
@@ -138,12 +169,41 @@ export const commentController = async (req, res) => {
         },
       }
     );
-    res.sendStatus(200);
-  } catch (error) {}
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).redirect('/error');
+  }
 };
 
-export const addGoodController = (req, res) => {
-  console.log(req.body);
+export const addGoodController = async (req, res) => {
+  try {
+    const addGood = await db.collection('posts').updateOne(
+      { _id: Number(req.body.postID) },
+      {
+        $set: { good: req.body.goodNumber },
+      }
+    );
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).redirect('/error');
+  }
+};
+
+export const addBadController = async (req, res) => {
+  try {
+    const addBad = await db.collection('posts').updateOne(
+      { _id: Number(req.body.postID) },
+      {
+        $set: { bad: req.body.badNumber },
+      }
+    );
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).redirect('/error');
+  }
 };
 
 /* 

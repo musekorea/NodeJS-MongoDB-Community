@@ -3,6 +3,7 @@ const commentBtn = document.querySelector('#commentBtn');
 const commentForm = document.querySelector('#commentForm');
 const commentCancelBtn = document.querySelector('#commentCancelBtn');
 const commentInput = document.querySelector('#commentInput');
+const editBtn = document.querySelector('#editBtn');
 
 const createComment = (comment) => {
   const dataSet = document.querySelector('#dataSet');
@@ -34,11 +35,13 @@ const addComment = (e) => {
   e.preventDefault();
   commentBtn.classList.add('hide');
   commentForm.classList.remove('hide');
+  editBtn.classList.add('hide');
 };
 const cancelComment = (e) => {
   commentInput.value = '';
   commentBtn.classList.remove('hide');
   commentForm.classList.add('hide');
+  editBtn.classList.remove('hide');
 };
 
 const submitComment = async (e) => {

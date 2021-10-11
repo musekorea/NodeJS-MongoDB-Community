@@ -4,6 +4,7 @@ const goodNum = document.querySelector('#goodNum');
 const badNum = document.querySelector('#badNum');
 
 let goodState = false;
+let badState = false;
 
 const addGood = async (e) => {
   e.preventDefault();
@@ -25,6 +26,34 @@ const addGood = async (e) => {
     }),
   });
   goodState = !goodState;
+  console.log(goodState);
+};
+
+const addBad = async (e) => {
+  e.preventDefault();
+  if (badState === false) {
+    badNum.innerHTML = Number(badNum.innerHTML) + 1;
+  } else {
+    badNum.innerHTML = Number(badNum.innerHTML) - 1;
+  }
+  const currentURL = document.location.href.split('/');
+  let postID = currentURL[currentURL.length - 1];
+  const regex = /[^0-9]/g;
+  postID = postID.replace(regex, '');
+  const fetchBad = await fetch('/community/addBad', {
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      postID,
+      badNumber: badNum.innerHTML,
+    }),
+  });
+  badState = !badState;
+};
+
+const editPost = async (e) => {
+  console.log(e);
 };
 
 goodBtn.addEventListener('click', addGood);
+badBtn.addEventListener('click', addBad);

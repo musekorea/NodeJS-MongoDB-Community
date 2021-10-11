@@ -26,8 +26,8 @@
     <span style="margin-right: 20px"> by <%=post.user%> </span
     ><span style="margin-right: 20px"> <%=post.createdAt%> </span>
     <span style="margin-right: 20px">💬 <%=post.commentsNumber%></span>
-    <span style="margin-right: 10px">👍10 </span
-    ><span style="margin-right: 10px">👎3</span>
+    <span style="margin-right: 10px">👍<%=post.good?post.good:0%> </span
+    ><span style="margin-right: 10px">👎<%=post.bad?post.bad:0%></span>
     <span>👁‍🗨 <%=locals.post.views%> views</span>
   </p>
 </a>

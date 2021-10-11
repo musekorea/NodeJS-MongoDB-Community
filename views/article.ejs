@@ -49,13 +49,19 @@
             ></span
           >
           <span style="margin-right: 10px">
-            <a class="likeBtns" id="goodBtn" href="#"
-              ><span>👍</span> <span id="goodNum">10</span></a
+            <a id="goodBtn" class="likeBtns" <%if(locals.isLoggedIn){%>
+              href="#" <%}else{%> style="pointer-events:none;" <%}%> >
+              <span>👍</span>
+              <span id="goodNum"
+                ><%=locals.post.good?locals.post.good:0%></span
+              ></a
             >
           </span>
           <span style="margin-right: 10px">
-            <a class="likeBtns" id="badBtn" href="#"
-              ><span>👎</span> <span id="badNum">3</span></a
+            <a class="likeBtns" id="badBtn" <%if(locals.isLoggedIn){%>
+              href="#" <%}else{%> style="pointer-events:none" <%}%> >
+              <span>👎</span>
+              <span id="badNum"><%=locals.post.bad?locals.post.bad:0%></span></a
             >
           </span>
           <span>👁‍🗨<%=locals.post.views%> views</span>
@@ -113,12 +119,12 @@
           </button></a
         >
         <%if(locals.user.nickname!==locals.post.user){%>
-        <span></span>
+        <span id="editBtn" style="pointer-events: none"></span>
         <%}else{%>
-        <button class="btn btn-danger" type="button">Edit</button>
-        <%}%> <%}else{%>
-        <span></span>
-        <%}%>
+        <a id="editBtn" href="/community/editArticle/<%=locals.post._id%>">
+          <button class="btn btn-danger" type="button">Edit</button>
+          <%}%> <%}else{%> <%}%>
+        </a>
       </div>
       <!--========= COMMETNS================ -->
       <%if(locals.comments.length<=1){%>
