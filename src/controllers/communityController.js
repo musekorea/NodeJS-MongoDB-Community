@@ -1,4 +1,6 @@
 import { db } from '../db.js';
+import { ObjectId } from 'mongodb';
+//const ObjectId = require('mongodb').ObjectId;
 
 let counter;
 
@@ -167,7 +169,7 @@ export const commentController = async (req, res) => {
         },
       }
     );
-    return res.sendStatus(200);
+    return res.status(200).send({ commentID });
   } catch (error) {
     console.log(error);
     return res.status(500).redirect('/error');
@@ -217,43 +219,43 @@ export const deleteArticleController = async (req, res) => {
   }
 };
 
-/* 
-export const editController = async (req, res) => {
+export const addNestedCommentController = async (req, res) => {
+  console.log(req.body);
   try {
-    const todo = await db
-      .collection('todos')
-      .findOne({ _id: Number(req.params.id) });
-    if (todo === null) {
-      return res.status(300).redirect('/community');
-    }
-    return res.status(200).render('edit.ejs', { todo });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const deleteController = async (req, res) => {
-  const delID = Number(req.body.id);
-
-  try {
-    const deleteTodo = await db.collection('todos').deleteOne({ _id: delID });
-
-    res.status(200).send('delete success');
-  } catch (error) {
-    console.log(error);
-  }
-};
-export const updateController = async (req, res) => {
-  const id = Number(req.params.id);
-  try {
-    const updateTodo = await db.collection('todos').updateOne(
-      { _id: id },
+    const addNestedComment = await db.collection('nestedComments').insertOne({
+      user: req.session.user.nickname,
+      content: req.body.content,
+      ownerComment: req.body.commentID,
+      createdAt: new Date().getTime(),
+    });
+    console.log(addNestedComment);
+    const commentID = new ObjectId(req.body.commentID);
+    const addToComments = await db.collection('comments').updateOne(
+      { _id: commentID },
       {
-        $set: { todo: req.body.todo, date: req.body.dueDate },
+        $set: {
+          nestedComments: [
+            {
+              id: addNestedComment.insertedId,
+              user: req.session.user.nickname,
+              createdAt: new Date().getTime(),
+              content: req.body.content,
+            },
+          ],
+        },
       }
     );
-    return res.sendStatus(300);
+    console.log(addToComments);
+    const addToUser = await db.collection('users').updateOne(
+      { nickname: req.session.user.nickname },
+      {
+        $set: {
+          nestedComments: [addNestedComment.insertedId],
+        },
+      }
+    );
   } catch (error) {
     console.log(error);
+    return res.status(500).redirect('/error');
   }
-}; */
+};

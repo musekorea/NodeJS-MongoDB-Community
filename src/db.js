@@ -5,14 +5,13 @@ const dbName = `todolist`;
 const client = new MongoClient(url);
 
 export let db;
-export let counter;
 
 export const connectDB = async () => {
   try {
     await client.connect();
     db = client.db(dbName);
     console.log(`DB is connected to Mongo Server`);
-    counter = await db.collection('counter').findOne({ name: 'counter' });
+    const counter = await db.collection('counter').findOne({ name: 'counter' });
     if (!counter) {
       counter = await db
         .collection('counter')

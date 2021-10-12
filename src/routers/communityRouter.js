@@ -10,6 +10,7 @@ import {
   getEditArticleController,
   putEditArticleController,
   deleteArticleController,
+  addNestedCommentController,
 } from '../controllers/communityController';
 import { loginOnly, ownerCheck } from '../middlewares';
 
@@ -40,6 +41,12 @@ communityRouter.delete(
   loginOnly,
   ownerCheck,
   deleteArticleController
+);
+
+communityRouter.post(
+  '/addNestedComment',
+  loginOnly,
+  addNestedCommentController
 );
 
 export default communityRouter;

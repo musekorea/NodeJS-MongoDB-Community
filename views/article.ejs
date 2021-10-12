@@ -7,7 +7,12 @@
   </head>
   <body style="overflow-y: scroll">
     <%- include("./components/NAVBAR.ejs")%>
-    <div id="articleContainer" class="container" style="width: 60%">
+    <div
+      id="articleContainer"
+      class="container"
+      style="width: 60%"
+      data-isLoggedIn="<%=locals.isLoggedIn%>"
+    >
       <div
         class="list-group-item list-group-item-action mb-3 mt-5"
         style="
