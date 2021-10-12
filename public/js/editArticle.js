@@ -1,6 +1,7 @@
 const editArticleForm = document.querySelector('#editArticleForm');
 const editArticleTitle = document.querySelector('#editArticleTitle');
 const editArticleContent = document.querySelector('#editArticleContent');
+const deleteArticleBtn = document.querySelector('#deleteArticleBtn');
 
 const editArticle = async (e) => {
   e.preventDefault();
@@ -19,4 +20,23 @@ const editArticle = async (e) => {
   }
 };
 
+const deleteArticle = async (e) => {
+  const currentURL = window.location.href.split('/');
+  const postID = currentURL[currentURL.length - 1];
+  try {
+    const deleteArticle = await fetch(`/community/deleteArticle/${postID}`, {
+      method: 'delete',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ postID }),
+      redirect: 'follow',
+    });
+    if (deleteArticle.status === 200) {
+      return window.location.replace(`/community/community`);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 editArticleForm.addEventListener('submit', editArticle);
+deleteArticleBtn.addEventListener('click', deleteArticle);

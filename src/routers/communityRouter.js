@@ -9,8 +9,9 @@ import {
   addBadController,
   getEditArticleController,
   putEditArticleController,
+  deleteArticleController,
 } from '../controllers/communityController';
-import { loginOnly } from '../middlewares';
+import { loginOnly, ownerCheck } from '../middlewares';
 
 const communityRouter = express.Router();
 
@@ -21,7 +22,24 @@ communityRouter.get('/post/:id', getArticleController);
 communityRouter.post('/comments', loginOnly, commentController);
 communityRouter.post('/addGood', addGoodController);
 communityRouter.post('/addBad', addBadController);
-communityRouter.get('/editArticle/:id', loginOnly, getEditArticleController);
-communityRouter.put('/editArticle/:id', loginOnly, putEditArticleController);
+communityRouter.get(
+  '/editArticle/:id',
+  loginOnly,
+  ownerCheck,
+  getEditArticleController
+);
+communityRouter.put(
+  '/editArticle/:id',
+  loginOnly,
+  ownerCheck,
+  putEditArticleController
+);
+
+communityRouter.delete(
+  '/deleteArticle/:id',
+  loginOnly,
+  ownerCheck,
+  deleteArticleController
+);
 
 export default communityRouter;

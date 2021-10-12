@@ -1,4 +1,5 @@
 import multer from 'multer';
+import { db } from './db.js';
 
 export const resLocals = (req, res, next) => {
   res.locals.user = req.session.user;
@@ -30,5 +31,22 @@ export const logoutOnly = (req, res, next) => {
     return next();
   } else {
     return res.redirect('/');
+  }
+};
+
+export const ownerCheck = async (req, res, next) => {
+  console.log(req.params.id);
+  let postOwner = await db
+    .collection('posts')
+    .findOne({ _id: Number(req.params.id) });
+  postOwner = postOwner.user;
+  const currentUser = req.session.user.nickname;
+  console.log(postOwner, currentUser);
+  if (postOwner === currentUser) {
+    return next();
+  } else {
+    return res
+      .status(400)
+      .send(`<h1>We're watching you! ${currentUser}, be careful! 👮‍♂️</h1>`);
   }
 };

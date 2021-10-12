@@ -119,7 +119,6 @@ export const getEditArticleController = async (req, res) => {
   const postData = await db
     .collection('posts')
     .findOne({ _id: Number(postID) });
-  console.log(postData);
   return res.status(200).render('editArticle.ejs', { postData });
 };
 export const putEditArticleController = async (req, res) => {
@@ -154,7 +153,6 @@ export const commentController = async (req, res) => {
       createdAt: new Date().getTime(),
     });
     const commentID = commentDB.insertedId;
-    console.log(commentID);
     const userDB = await db
       .collection('users')
       .updateOne(
@@ -199,6 +197,19 @@ export const addBadController = async (req, res) => {
         $set: { bad: req.body.badNumber },
       }
     );
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).redirect('/error');
+  }
+};
+
+export const deleteArticleController = async (req, res) => {
+  console.log(req.body);
+  try {
+    const deleteArticle = await db
+      .collection('posts')
+      .deleteOne({ _id: Number(req.body.postID) });
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);
