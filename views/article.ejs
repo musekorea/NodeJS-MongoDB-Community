@@ -142,8 +142,12 @@
         <span class="commentsNumber"> <%=locals.comments.length%> </span>
         comment
       </p>
-      <%}%> <%locals.comments.forEach((comment)=>{%>
-      <%-include("./components/COMMENTS.ejs",{comment})%> <%})%>
+      <%}%>
+      <div id="commentsContainer">
+        <%locals.comments.forEach((comment)=>{%>
+        <%-include("./components/COMMENTS.ejs",{comment})%> <%})%>
+        <span></span>
+      </div>
     </div>
   </body>
 </html>

@@ -254,6 +254,9 @@ export const addNestedCommentController = async (req, res) => {
         },
       }
     );
+    return res
+      .status(200)
+      .send({ nestedCommentID: addNestedComment.insertedId });
   } catch (error) {
     console.log(error);
     return res.status(500).redirect('/error');

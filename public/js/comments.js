@@ -3,13 +3,14 @@ const commentBtn = document.querySelector('#commentBtn');
 const commentForm = document.querySelector('#commentForm');
 const commentCancelBtn = document.querySelector('#commentCancelBtn');
 const commentInput = document.querySelector('#commentInput');
+const commentsContainer = document.querySelector('#commentsContainer');
 const editBtn = document.querySelector('#editBtn');
 const dataSet = document.querySelector('#dataSet');
 
-let allNestedBtn = document.querySelectorAll('#nestedCommentBtn');
 let nestedState = false;
 let commentState = false;
 let commentID;
+let parentComment;
 
 const createComment = (comment) => {
   const commentDiv = document.createElement('div');
@@ -48,7 +49,13 @@ const createComment = (comment) => {
     color: white;
   `;
   commentDiv.append(commentHeader, commentBody, nestedCommentBtn);
-  articleContainer.append(commentDiv);
+  commentsContainer.prepend(commentDiv);
+  commentState = false;
+  refreshNestedBtns();
+  console.log(`sibling`, commentDiv.nextSibling);
+  const nestCommentContainer = document.createElement('div');
+  nestCommentContainer.id = 'xxxx';
+  commentsContainer.insertBefore(nestCommentContainer, commentDiv.nextSibling);
 };
 
 const addComment = (e) => {
@@ -83,13 +90,10 @@ const submitComment = async (e) => {
       cancelComment();
       createComment(comment);
       commentsNumbers = document.querySelectorAll('.commentsNumber');
-
       let commentID = await fetchComment.json();
       commentID = commentID.commentID;
-      console.log(commentID);
-      articleContainer.lastChild.id = commentID;
-      allNestedBtn = document.querySelectorAll('#nestedCommentBtn');
-      console.log(allNestedBtn);
+      commentsContainer.firstElementChild.id = commentID; //이거임
+      refreshNestedBtns();
       commentState = false;
     }
   } catch (error) {
@@ -97,11 +101,57 @@ const submitComment = async (e) => {
   }
 };
 
-const addNestedComment = async (e) => {
+const renderingNestedComment = (nestID, content) => {
+  const nickname = dataSet.dataset.user;
+  const avatar = dataSet.dataset.avatar;
+  const createdAt = new Date().getTime();
+  console.log(nestID, content, nickname, avatar, createdAt);
+  const nestedForm = document.querySelector('#nestedForm');
+  nestedForm.remove();
+  const commentDiv = document.createElement('div');
+  commentDiv.className = `mb-3`;
+  commentDiv.style = `
+  border: 1px solid rgba(90, 40, 40, 0.1);
+  border-top:none;
+  border-left:none;
+  border-radius: 20px;
+  background-color: thistle;
+  box-shadow: 6px 6px 6px rgba(0, 0, 0, 0.2);
+  padding:10px 20px 10px 20px;
+  position:relative;
+  left:20%;
+  width:80%
+`;
+  const commentHeader = document.createElement('div');
+  commentHeader.className = `mb-3`;
+  const commentAvatar = document.createElement('img');
+  commentHeader.innerHTML = `${nickname} | ${createdAt}`;
+  commentAvatar.src = avatar;
+  commentAvatar.style = `width:30px;height:30px;border-radius:50%;margin-right:15px`;
+  commentHeader.prepend(commentAvatar);
+  const commentBody = document.createElement('p');
+  commentBody.innerHTML = content;
+  commentDiv.append(commentHeader, commentBody);
+  const parentCommentDiv = document.querySelector(`[id="${commentID}"]`);
+  parentCommentDiv.nextElementSibling.append(commentDiv);
+  refreshNestedBtns();
+  nestedState = false;
+  commentState = false;
+};
+
+const submitNestedComment = async (e) => {
   e.preventDefault();
+  nestedState = false;
   const content = e.target.children[0].value;
+  if (content === '' || !content) {
+    const replyInput = document.querySelector('#nestedInput');
+    replyInput.placeholder = `Must not be empty 🤸‍♀️`;
+    replyInput.classList.add('placeholderError');
+    return;
+  }
   try {
-    const nestFeth = await fetch('/community/addNestedComment', {
+    console.log(`아이디예요`, commentID);
+    const nestFetch = await fetch('/community/addNestedComment', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -109,6 +159,14 @@ const addNestedComment = async (e) => {
         content,
       }),
     });
+    const nestJson = await nestFetch.json();
+    if (nestFetch.status === 200) {
+      nestedState = false;
+      commentState = false;
+      renderingNestedComment(nestJson.nestedCommentID, content);
+    }
+    commentBtn.style = `pointer-events: auto`;
+    editBtn.style = `pointer-events: auto`;
   } catch (error) {
     console.log(error);
   }
@@ -119,14 +177,15 @@ const handleClickNestedComment = (e) => {
     return;
   }
   if (nestedState === false) {
-    const parentComment = e.target.parentElement;
+    parentComment = e.target.parentElement;
     commentID = parentComment.id;
     const nestedForm = document.createElement('form');
     nestedForm.id = 'nestedForm';
     nestedForm.className = `input-group mb-3`;
     const nestedInput = document.createElement('input');
+    nestedInput.id = `nestedInput`;
     nestedInput.className = `form-control`;
-    nestedInput.ariaLabel = `Recipient's username`;
+    nestedInput.placeholder = `Add a comment`;
     nestedInput.ariaRoleDescription = `button-addon2`;
     const nestedInputButton = document.createElement('button');
     nestedInputButton.className = `btn btn-outline-secondary`;
@@ -135,15 +194,17 @@ const handleClickNestedComment = (e) => {
     nestedInputButton.style = `background-color:tomato;color:white`;
     nestedForm.append(nestedInput);
     nestedForm.append(nestedInputButton);
-    articleContainer.insertBefore(nestedForm, parentComment.nextSibling);
+    commentsContainer.insertBefore(nestedForm, parentComment.nextSibling);
     commentBtn.style = `pointer-events: none`;
+    editBtn.style = `pointer-events: none`;
+    nestedForm.addEventListener('submit', submitNestedComment);
     nestedState = true;
-    nestedForm.addEventListener('submit', addNestedComment);
   } else {
     const nestedForm = document.querySelector('#nestedForm');
     nestedForm.remove();
     nestedState = false;
     commentBtn.style = `pointer-events: auto`;
+    editBtn.style = `pointer-events: auto`;
   }
 };
 
@@ -159,8 +220,16 @@ if (commentForm) {
   commentForm.addEventListener('submit', submitComment);
 }
 
-if (allNestedBtn && articleContainer.dataset.isloggedin === 'true') {
-  allNestedBtn.forEach((nestedBtn) => {
-    nestedBtn.addEventListener('click', handleClickNestedComment);
-  });
+const refreshNestedBtns = () => {
+  if (articleContainer.dataset.isloggedin === 'true') {
+    let allNestedBtn = document.querySelectorAll('#nestedCommentBtn');
+    allNestedBtn.forEach((nestedBtn) => {
+      nestedBtn.addEventListener('click', handleClickNestedComment);
+    });
+  }
+};
+
+function init() {
+  refreshNestedBtns();
 }
+init();

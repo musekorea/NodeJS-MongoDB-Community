@@ -10,7 +10,7 @@ import userRouter from './routers/userRouter.js';
 import communityRouter from './routers/communityRouter.js';
 
 const app = express();
-
+//asdf
 app.use(morgan('dev'));
 app.use(cors());
 app.use(express.static('public'));
