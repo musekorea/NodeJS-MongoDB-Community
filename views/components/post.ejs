@@ -23,9 +23,16 @@
     />
   </div>
   <p class="mb-1 text-muted">
-    <span style="margin-right: 20px"> by <%=post.user%> </span
+    by<span style="margin-right: 20px; font-weight: bolder">
+      <%=post.user%> </span
     ><span style="margin-right: 20px"> <%=post.createdAt%> </span>
+    <%if(post.nestedCommentsNumber){%>
+    <span style="margin-right: 20px"
+      >💬 <%=post.commentsNumber+Number(post.nestedCommentsNumber)%></span
+    >
+    <%}else{%>
     <span style="margin-right: 20px">💬 <%=post.commentsNumber%></span>
+    <%}%>
     <span style="margin-right: 10px">👍<%=post.good?post.good:0%> </span
     ><span style="margin-right: 10px">👎<%=post.bad?post.bad:0%></span>
     <span>👁‍🗨 <%=locals.post.views%> views</span>

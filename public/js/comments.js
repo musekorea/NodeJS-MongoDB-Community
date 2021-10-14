@@ -4,6 +4,7 @@ const commentForm = document.querySelector('#commentForm');
 const commentCancelBtn = document.querySelector('#commentCancelBtn');
 const commentInput = document.querySelector('#commentInput');
 const commentsContainer = document.querySelector('#commentsContainer');
+const commentNumbers = document.querySelectorAll('.commentsNumber');
 const editBtn = document.querySelector('#editBtn');
 const dataSet = document.querySelector('#dataSet');
 
@@ -52,7 +53,6 @@ const createComment = (comment) => {
   commentsContainer.prepend(commentDiv);
   commentState = false;
   refreshNestedBtns();
-  console.log(`sibling`, commentDiv.nextSibling);
   const nestCommentContainer = document.createElement('div');
   nestCommentContainer.id = 'xxxx';
   commentsContainer.insertBefore(nestCommentContainer, commentDiv.nextSibling);
@@ -86,15 +86,16 @@ const submitComment = async (e) => {
       body: JSON.stringify({ comment, postID }),
     });
     if (fetchComment.status === 200) {
-      console.log(`success`);
       cancelComment();
       createComment(comment);
-      commentsNumbers = document.querySelectorAll('.commentsNumber');
       let commentID = await fetchComment.json();
       commentID = commentID.commentID;
       commentsContainer.firstElementChild.id = commentID; //이거임
       refreshNestedBtns();
       commentState = false;
+      commentNumbers.forEach((commentNumber) => {
+        commentNumber.innerText = `${Number(commentNumber.innerText) + 1}`;
+      });
     }
   } catch (error) {
     console.log(error);
@@ -105,7 +106,6 @@ const renderingNestedComment = (nestID, content) => {
   const nickname = dataSet.dataset.user;
   const avatar = dataSet.dataset.avatar;
   const createdAt = new Date().getTime();
-  console.log(nestID, content, nickname, avatar, createdAt);
   const nestedForm = document.querySelector('#nestedForm');
   nestedForm.remove();
   const commentDiv = document.createElement('div');
@@ -150,7 +150,6 @@ const submitNestedComment = async (e) => {
     return;
   }
   try {
-    console.log(`아이디예요`, commentID);
     const nestFetch = await fetch('/community/addNestedComment', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -167,6 +166,9 @@ const submitNestedComment = async (e) => {
     }
     commentBtn.style = `pointer-events: auto`;
     editBtn.style = `pointer-events: auto`;
+    commentNumbers.forEach((commentNumber) => {
+      commentNumber.innerText = `${Number(commentNumber.innerText) + 1}`;
+    });
   } catch (error) {
     console.log(error);
   }

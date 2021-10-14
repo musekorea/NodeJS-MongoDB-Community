@@ -19,7 +19,13 @@
       src="<%=comment.avatar%>"
       style="width: 30px; height: 30px; border-radius: 50%; margin-right: 15px"
     />
-    <span><%=comment.owner%></span><span><%=comment.createdAt%></span>
+
+    <span class="text-muted">by </span>
+    <span class="text-muted" style="margin-right: 20px; font-weight: bolder">
+      <a href="/user/userProfile/<%=locals.post.user%>" style="color: seagreen"
+        ><%=comment.owner%></a
+      > </span
+    ><span class="text-muted"><%=comment.createdAt%></span>
   </div>
   <p><%=comment.content%></p>
 
@@ -108,3 +114,4 @@
   </div>
   <%}%>
 </div>
+<div id="xxxx"></div>

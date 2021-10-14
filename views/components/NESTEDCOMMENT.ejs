@@ -1,0 +1,35 @@
+<div
+  class="mb-3"
+  id="<%=nestedComment._id%>"
+  style="
+    border-right: 1px solid rgba(90, 40, 40, 0.1);
+    border-bottom: 1px solid rgba(90, 40, 40, 0.1);
+    border-top: none;
+    border-left: none;
+    border-radius: 20px;
+    background-color: thistle;
+    box-shadow: 6px 6px 6px rgba(0, 0, 0, 0.2);
+    padding: 10px 20px 10px 20px;
+    position: relative;
+    left: 20%;
+    width: 80%;
+  "
+>
+  <div class="mb-3">
+    <img
+      src="<%=nestedComment.avatar%>"
+      style="width: 30px; height: 30px; border-radius: 50%; margin-right: 15px"
+    />
+    <span class="text-muted">by </span>
+    <span class="text-muted" style="margin-right: 20px; font-weight: bolder">
+      <a
+        href="/user/userProfile/<%=locals.post.user%>"
+        style="color: steelblue"
+      >
+        <%=nestedComment.user%></a
+      > </span
+    ><span class="text-muted"> <%=nestedComment.createdAt%></span>
+  </div>
+  <p><%=nestedComment.content%></p>
+</div>
+<div id="xxxx"></div>

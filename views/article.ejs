@@ -46,11 +46,11 @@
               ><%=locals.post.user%></a
             >
           </span>
-          <span style="margin-right: 20px">• <%=locals.post.createdAt%> </span>
+          <span style="margin-right: 20px"><%=locals.post.createdAt%> </span>
           <span style="margin-right: 20px"
             >💬
             <span class="commentsNumber"
-              ><%=locals.comments.length%></span
+              ><%=locals.comments.length+Number(locals.nestedNumber)%></span
             ></span
           >
           <span style="margin-right: 10px">
@@ -89,7 +89,7 @@
         >
       </div>
 
-      <!-- ========ADD COMMENTS===================== -->
+      <!-- ============DATA SET=================== -->
       <%if(locals.isLoggedIn){%>
       <span
         id="dataSet"
@@ -97,6 +97,7 @@
         data-user="<%=locals.user.nickname%>"
       ></span>
       <%}%>
+      <!-- ========ADD COMMENTS FORM===================== -->
       <form action="#" id="commentForm" method="post" class="hide">
         <div class="form-floating">
           <textarea
@@ -131,21 +132,34 @@
           <%}%> <%}else{%> <%}%>
         </a>
       </div>
-      <!--========= COMMETNS================ -->
-      <%if(locals.comments.length<=1){%>
+
+      <!-- =====COMMENTS NUMBERS==== -->
+
+      <%if(locals.comments.length+Number(locals.nestedNumber)<=1){%>
       <p>
-        <span class="commentsNumber"> <%=locals.comments.length%> </span>
+        <span id="commentsNumber" class="commentsNumber">
+          <%=locals.comments.length+Number(locals.nestedNumber)%>
+        </span>
         comment
       </p>
       <%}else{%>
       <p>
-        <span class="commentsNumber"> <%=locals.comments.length%> </span>
-        comment
+        <span id="commentsNumber" class="commentsNumber">
+          <%=locals.comments.length+Number(locals.nestedNumber)%>
+        </span>
+        comments
       </p>
       <%}%>
+      <!-- =====COMMENTS NUMBERS==== -->
+
+      <!--========= COMMETNS RENDERING ================ -->
       <div id="commentsContainer">
         <%locals.comments.forEach((comment)=>{%>
-        <%-include("./components/COMMENTS.ejs",{comment})%> <%})%>
+        <%-include("./components/COMMENTS.ejs",{comment})%>
+        <%if(comment.nestedComments){%>
+        <%comment.nestedComments.forEach((nestedComment)=>{%>
+        <%-include("./components/NESTEDCOMMENT.ejs",{nestedComment})%> <%})%>
+        <%}%> <%})%>
         <span></span>
       </div>
     </div>

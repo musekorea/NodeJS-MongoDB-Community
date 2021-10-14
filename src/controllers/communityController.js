@@ -15,6 +15,7 @@ export const communityController = async (req, res) => {
         post.commentsNumber = 0;
       }
     });
+
     return res.status(200).render('community.ejs', { posts });
   } catch (error) {
     console.log(error);
@@ -99,17 +100,25 @@ export const getArticleController = async (req, res) => {
       .collection('comments')
       .find({ postID: req.params.id })
       .toArray();
+    let nestedNumber = 0;
     comments.forEach((comment) => {
       comment.createdAt = createdAt(comment.createdAt);
+      if (comment.nestedComments) {
+        nestedNumber = nestedNumber + comment.nestedComments.length;
+        comment.nestedComments.forEach((nest) => {
+          nest.createdAt = createdAt(nest.createdAt);
+        });
+      }
     });
-
     const viewsUpdate = await db.collection('posts').updateOne(
       { _id: Number(req.params.id) },
       {
         $inc: { views: +1 },
       }
     );
-    return res.status(200).render('article.ejs', { post, comments });
+    return res
+      .status(200)
+      .render('article.ejs', { post, comments, nestedNumber });
   } catch (error) {
     console.log(error);
     return res.status(500).redirect('/error');
@@ -169,6 +178,7 @@ export const commentController = async (req, res) => {
         },
       }
     );
+
     return res.status(200).send({ commentID });
   } catch (error) {
     console.log(error);
@@ -207,7 +217,6 @@ export const addBadController = async (req, res) => {
 };
 
 export const deleteArticleController = async (req, res) => {
-  console.log(req.body);
   try {
     const deleteArticle = await db
       .collection('posts')
@@ -220,7 +229,6 @@ export const deleteArticleController = async (req, res) => {
 };
 
 export const addNestedCommentController = async (req, res) => {
-  console.log(req.body);
   try {
     const addNestedComment = await db.collection('nestedComments').insertOne({
       user: req.session.user.nickname,
@@ -228,24 +236,22 @@ export const addNestedCommentController = async (req, res) => {
       ownerComment: req.body.commentID,
       createdAt: new Date().getTime(),
     });
-    console.log(addNestedComment);
     const commentID = new ObjectId(req.body.commentID);
     const addToComments = await db.collection('comments').updateOne(
       { _id: commentID },
       {
-        $set: {
-          nestedComments: [
-            {
-              id: addNestedComment.insertedId,
-              user: req.session.user.nickname,
-              createdAt: new Date().getTime(),
-              content: req.body.content,
-            },
-          ],
+        $addToSet: {
+          nestedComments: {
+            id: addNestedComment.insertedId,
+            user: req.session.user.nickname,
+            createdAt: new Date().getTime(),
+            content: req.body.content,
+            avatar: req.session.user.avatar,
+          },
         },
       }
     );
-    console.log(addToComments);
+
     const addToUser = await db.collection('users').updateOne(
       { nickname: req.session.user.nickname },
       {
@@ -254,6 +260,13 @@ export const addNestedCommentController = async (req, res) => {
         },
       }
     );
+    const nestedCommentsNumber = await db
+      .collection('posts')
+      .updateOne(
+        { comments: commentID },
+        { $inc: { nestedCommentsNumber: +1 } }
+      );
+
     return res
       .status(200)
       .send({ nestedCommentID: addNestedComment.insertedId });
