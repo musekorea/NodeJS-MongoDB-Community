@@ -11,6 +11,7 @@ import {
   putEditArticleController,
   deleteArticleController,
   addNestedCommentController,
+  commentDeleteController,
 } from '../controllers/communityController';
 import { loginOnly, ownerCheck } from '../middlewares';
 
@@ -21,6 +22,7 @@ communityRouter.get('/write', loginOnly, getWriteController);
 communityRouter.post('/write', loginOnly, postWriteController);
 communityRouter.get('/post/:id', getArticleController);
 communityRouter.post('/comments', loginOnly, commentController);
+communityRouter.delete('/comments', loginOnly, commentDeleteController);
 communityRouter.post('/addGood', addGoodController);
 communityRouter.post('/addBad', addBadController);
 communityRouter.get(

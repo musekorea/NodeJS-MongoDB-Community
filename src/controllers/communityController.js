@@ -99,6 +99,7 @@ export const getArticleController = async (req, res) => {
     const comments = await db
       .collection('comments')
       .find({ postID: req.params.id })
+      .sort({ _id: -1 })
       .toArray();
     let nestedNumber = 0;
     comments.forEach((comment) => {
@@ -116,6 +117,7 @@ export const getArticleController = async (req, res) => {
         $inc: { views: +1 },
       }
     );
+    console.log(comments);
     return res
       .status(200)
       .render('article.ejs', { post, comments, nestedNumber });
@@ -274,4 +276,8 @@ export const addNestedCommentController = async (req, res) => {
     console.log(error);
     return res.status(500).redirect('/error');
   }
+};
+
+export const commentDeleteController = (req, res) => {
+  console.log(req.body);
 };

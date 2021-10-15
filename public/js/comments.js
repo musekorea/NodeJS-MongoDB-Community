@@ -5,6 +5,8 @@ const commentCancelBtn = document.querySelector('#commentCancelBtn');
 const commentInput = document.querySelector('#commentInput');
 const commentsContainer = document.querySelector('#commentsContainer');
 const commentNumbers = document.querySelectorAll('.commentsNumber');
+let commentDeleteBtns = document.querySelectorAll('.commentDeleteBtn');
+console.log(commentDeleteBtns);
 const editBtn = document.querySelector('#editBtn');
 const dataSet = document.querySelector('#dataSet');
 
@@ -12,6 +14,35 @@ let nestedState = false;
 let commentState = false;
 let commentID;
 let parentComment;
+
+const createdAt = (oldTime) => {
+  const currentTime = Math.floor(new Date().getTime() / (1000 * 60));
+  const targetTime = Math.floor(Number(oldTime / (1000 * 60)));
+  const calTime = currentTime - targetTime;
+  let resultTime;
+  let resultCreatedAt;
+  if (calTime < 60) {
+    resultTime = calTime;
+    return (resultCreatedAt =
+      resultTime <= 1 ? `1 minute ago` : `${resultTime} minutes ago`);
+  } else if (calTime >= 60 && calTime < 60 * 24) {
+    resultTime = Math.floor(calTime / 60);
+    return (resultCreatedAt =
+      resultTime <= 1 ? `1 hour ago` : `${resultTime} hours ago`);
+  } else if (calTime >= 60 * 24 && calTime < 60 * 24 * 30) {
+    resultTime = Math.floor(calTime / (60 * 24));
+    return (resultCreatedAt =
+      resultTime <= 1 ? `1 day ago` : `${resultTime} day ago`);
+  } else if (calTime >= 60 * 24 * 30 && calTime < 60 * 24 * 30 * 12) {
+    resultTime = Math.floor(calTime / (60 * 24 * 30));
+    return (resultCreatedAt =
+      resultTime <= 1 ? `1 month ago` : `${resultTime} months ago`);
+  } else {
+    resultTime = Math.floor(calTime / (60 * 24 * 30 * 12));
+    return (resultCreatedAt =
+      resultTime <= 1 ? `1 year ago` : `${resultTime} years ago`);
+  }
+};
 
 const createComment = (comment) => {
   const commentDiv = document.createElement('div');
@@ -29,7 +60,9 @@ const createComment = (comment) => {
   const commentHeader = document.createElement('div');
   commentHeader.className = `mb-3`;
   const commentAvatar = document.createElement('img');
-  commentHeader.innerHTML = `${dataSet.dataset.user} | 6 hours ago`;
+  commentHeader.innerHTML = `${dataSet.dataset.user} | ${createdAt(
+    new Date().getTime()
+  )}`;
   commentAvatar.src = dataSet.dataset.avatar;
   commentAvatar.style = `width:30px;height:30px;border-radius:50%;margin-right:15px`;
   commentHeader.prepend(commentAvatar);
@@ -49,13 +82,36 @@ const createComment = (comment) => {
     font-weight: bolder;
     color: white;
   `;
-  commentDiv.append(commentHeader, commentBody, nestedCommentBtn);
+  const commentDeleteJSBtn = document.createElement('a');
+  commentDeleteJSBtn.className = `commentDeleteBtn`;
+  commentDeleteJSBtn.innerHTML = `
+  <button
+      style="
+        color: white;
+        border: none;
+        outline: none;
+        background-color: steelblue;
+        border-radius: 10px;
+        position: absolute;
+        top: 10px;
+        right: 30px;
+      "
+    >
+      Delete
+    </button>`;
+  commentDiv.append(
+    commentHeader,
+    commentBody,
+    nestedCommentBtn,
+    commentDeleteJSBtn
+  );
   commentsContainer.prepend(commentDiv);
   commentState = false;
   refreshNestedBtns();
   const nestCommentContainer = document.createElement('div');
   nestCommentContainer.id = 'xxxx';
   commentsContainer.insertBefore(nestCommentContainer, commentDiv.nextSibling);
+  refreshCommentDeleteBtns();
 };
 
 const addComment = (e) => {
@@ -210,6 +266,44 @@ const handleClickNestedComment = (e) => {
   }
 };
 
+const commentDelete = async (e) => {
+  e.preventDefault();
+  console.log(e);
+  const targetComment = e.target.parentElement.parentElement;
+  const checkNested = targetComment.nextElementSibling;
+  if (checkNested.innerHTML) {
+    const nestedModal = document.createElement('div');
+    nestedModal.id = `nestedModal`;
+    nestedModal.style = `position:absolute;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.4)`;
+    nestedModal.innerHTML = `
+    <div class="modal-dialog" style="top:30%">
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>If the comment has a nested comment, you'cant delete</p>
+        </div>
+        <div class="modal-footer">
+          <button id="nestedModalBtn" type="button" class="btn btn-secondary" >Close</button>
+        </div>
+      </div>
+    </div>
+  `;
+    articleContainer.append(nestedModal);
+    const nestedModalBtn = document.querySelector('#nestedModalBtn');
+    nestedModalBtn.addEventListener('click', () => {
+      nestedModal.remove();
+      return;
+    });
+    return;
+  }
+  //db 먼저 삭제
+  console.log(targetComment.id);
+  const deleteComment = await fetch('/community/comments', {
+    method: 'delete',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ commentID: targetComment.id }),
+  });
+};
+
 if (commentBtn) {
   commentBtn.addEventListener('click', addComment);
 }
@@ -222,9 +316,20 @@ if (commentForm) {
   commentForm.addEventListener('submit', submitComment);
 }
 
+const refreshCommentDeleteBtns = () => {
+  commentDeleteBtns = document.querySelectorAll(`.commentDeleteBtn`);
+  console.log(commentDeleteBtns);
+  if (commentDeleteBtns) {
+    commentDeleteBtns.forEach((commentDeleteBtn) => {
+      commentDeleteBtn.addEventListener('click', commentDelete);
+    });
+  }
+};
+
 const refreshNestedBtns = () => {
   if (articleContainer.dataset.isloggedin === 'true') {
     let allNestedBtn = document.querySelectorAll('#nestedCommentBtn');
+    console.log();
     allNestedBtn.forEach((nestedBtn) => {
       nestedBtn.addEventListener('click', handleClickNestedComment);
     });
@@ -233,5 +338,6 @@ const refreshNestedBtns = () => {
 
 function init() {
   refreshNestedBtns();
+  refreshCommentDeleteBtns();
 }
 init();
