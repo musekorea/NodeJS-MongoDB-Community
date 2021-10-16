@@ -235,9 +235,10 @@ export const deleteArticleController = async (req, res) => {
 };
 
 export const addNestedCommentController = async (req, res) => {
+  console.log(req.params);
   try {
     const addNestedComment = await db.collection('nestedComments').insertOne({
-      postID: req.params,
+      postID: req.params.id,
       user: req.session.user.nickname,
       content: req.body.content,
       ownerComment: req.body.commentID,
@@ -305,9 +306,36 @@ export const commentDeleteController = async (req, res) => {
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);
+    return res.status(500).redirect('/error');
   }
 };
 
 export const deleteNestedCommentController = async (req, res) => {
-  console.log(req.body, req.params);
+  const postID = Number(req.body.postID);
+  const commentID = new ObjectId(req.body.commentID);
+  const nestedID = new ObjectId(req.params.id);
+  try {
+    const userDelete = await db.collection('users').updateOne(
+      { nickname: req.session.user.nickname },
+      {
+        $pull: { nestedComments: nestedID },
+      }
+    );
+    const postDelete = await db
+      .collection('posts')
+      .updateOne({ _id: postID }, { $inc: { nestedCommentsNumber: -1 } });
+    const commentDelete = await db.collection('comments').updateOne(
+      { _id: commentID },
+      {
+        $pull: { nestedComments: { id: nestedID } },
+      }
+    );
+    const nestedDelete = await db
+      .collection('nestedComments')
+      .deleteOne({ _id: nestedID });
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).redirect('/error');
+  }
 };

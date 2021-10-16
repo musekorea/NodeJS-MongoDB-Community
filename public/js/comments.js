@@ -113,7 +113,6 @@ const createComment = (comment) => {
   commentState = false;
   refreshNestedBtns();
   const nestCommentContainer = document.createElement('div');
-  nestCommentContainer.id = 'xxxx';
   commentsContainer.insertBefore(nestCommentContainer, commentDiv.nextSibling);
   refreshCommentDeleteBtns();
 };
@@ -148,7 +147,10 @@ const submitComment = async (e) => {
       createComment(comment);
       let commentID = await fetchComment.json();
       commentID = commentID.commentID;
-      commentsContainer.firstElementChild.id = commentID; //이거임
+      const currentComment = commentsContainer.firstElementChild;
+      currentComment.id = commentID;
+      const nestCommentContainer = currentComment.nextElementSibling;
+      nestCommentContainer.className = commentID;
       refreshNestedBtns();
       commentState = false;
       commentNumbers.forEach((commentNumber) => {
@@ -163,7 +165,6 @@ const submitComment = async (e) => {
 const renderingNestedComment = (nestID, content) => {
   const nickname = dataSet.dataset.user;
   const avatar = dataSet.dataset.avatar;
-  const createdAt = new Date().getTime();
   const nestedForm = document.querySelector('#nestedForm');
   nestedForm.remove();
   const commentDiv = document.createElement('div');
@@ -184,7 +185,7 @@ const renderingNestedComment = (nestID, content) => {
   const commentHeader = document.createElement('div');
   commentHeader.className = `mb-3`;
   const commentAvatar = document.createElement('img');
-  commentHeader.innerHTML = `${nickname} | ${createdAt}`;
+  commentHeader.innerHTML = `${nickname} | ${createdAt(new Date().getTime())}`;
   commentAvatar.src = avatar;
   commentAvatar.style = `width:30px;height:30px;border-radius:50%;margin-right:15px`;
   commentHeader.prepend(commentAvatar);
@@ -227,7 +228,7 @@ const submitNestedComment = async (e) => {
     return;
   }
   try {
-    const nestFetch = await fetch('/community/nested', {
+    const nestFetch = await fetch(`/community/nested/${postID}`, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -293,6 +294,7 @@ const commentDelete = async (e) => {
   console.log(e);
   const targetComment = e.target.parentElement.parentElement;
   const checkNested = targetComment.nextElementSibling;
+
   if (checkNested.innerHTML) {
     document.body.style = 'overflow:hidden';
     const nestedModal = document.createElement('div');
@@ -310,6 +312,7 @@ const commentDelete = async (e) => {
       </div>
     </div>
   `;
+
     articleContainer.append(nestedModal);
     const nestedModalBtn = document.querySelector('#nestedModalBtn');
     nestedModalBtn.addEventListener('click', () => {
@@ -327,7 +330,14 @@ const commentDelete = async (e) => {
     });
     if (deleteComment.status === 200) {
       const comment = document.querySelector(`[id="${targetComment.id}"]`);
+      const nestedCommentContainer = document.querySelector(
+        `[class="${targetComment.id}"]`
+      );
+      commentNumbers.forEach((commentNumber) => {
+        commentNumber.innerText = `${Number(commentNumber.innerText) - 1}`;
+      });
       comment.remove();
+      nestedCommentContainer.remove();
     }
   } catch (error) {
     console.log(error);
@@ -336,12 +346,24 @@ const commentDelete = async (e) => {
 
 const nestedDelete = async (e) => {
   const parentNested = e.target.parentElement.parentElement;
+  const parentCommentID =
+    e.target.parentElement.parentElement.parentElement.className;
   const nestedID = parentNested.id;
-  const deleteNested = await fetch(`/community/nested/${nestedID}`, {
-    method: 'delete',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ postID }),
-  });
+  try {
+    const deleteNested = await fetch(`/community/nested/${nestedID}`, {
+      method: 'delete',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ postID, commentID: parentCommentID }),
+    });
+    if (deleteNested.status === 200) {
+      commentNumbers.forEach((commentNumber) => {
+        commentNumber.innerText = `${Number(commentNumber.innerText) - 1}`;
+      });
+      parentNested.remove();
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 if (commentBtn) {

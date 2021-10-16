@@ -157,12 +157,12 @@
         <%locals.comments.forEach((comment)=>{%>
         <%-include("./components/COMMENTS.ejs",{comment})%>
         <%if(comment.nestedComments){%>
-        <div class="xxxx">
+        <div class="<%=comment._id%>">
           <%comment.nestedComments.forEach((nestedComment)=>{%>
           <%-include("./components/NESTEDCOMMENT.ejs",{nestedComment})%> <%})%>
         </div>
         <%}else{%>
-        <div class="xxxx"></div>
+        <div class="<%=comment._id%>"></div>
         <%}%> <%})%>
       </div>
       <span></span>

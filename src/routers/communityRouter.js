@@ -48,7 +48,7 @@ communityRouter.post('/addBad', addBadController);
 communityRouter.post('/comments/:id', loginOnly, commentController);
 communityRouter.delete('/comments/:id', loginOnly, commentDeleteController);
 
-communityRouter.post('/nested', loginOnly, addNestedCommentController);
+communityRouter.post('/nested/:id', loginOnly, addNestedCommentController);
 
 communityRouter.delete('/nested/:id', loginOnly, deleteNestedCommentController);
 
