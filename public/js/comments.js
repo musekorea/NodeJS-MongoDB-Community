@@ -6,9 +6,13 @@ const commentInput = document.querySelector('#commentInput');
 const commentsContainer = document.querySelector('#commentsContainer');
 const commentNumbers = document.querySelectorAll('.commentsNumber');
 let commentDeleteBtns = document.querySelectorAll('.commentDeleteBtn');
-console.log(commentDeleteBtns);
+let nestedDeleteBtns = document.querySelectorAll('.nestedDeleteBtn');
+
 const editBtn = document.querySelector('#editBtn');
 const dataSet = document.querySelector('#dataSet');
+
+const currentURL = window.location.href.split('/');
+const postID = currentURL[currentURL.length - 1];
 
 let nestedState = false;
 let commentState = false;
@@ -131,15 +135,13 @@ const cancelComment = (e) => {
 };
 
 const submitComment = async (e) => {
-  const currentURL = window.location.href.split('/');
-  const postID = currentURL[currentURL.length - 1];
   e.preventDefault();
   const comment = commentInput.value;
   try {
-    const fetchComment = await fetch(`/community/comments`, {
+    const fetchComment = await fetch(`/community/comments/${postID}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ comment, postID }),
+      body: JSON.stringify({ comment }),
     });
     if (fetchComment.status === 200) {
       cancelComment();
@@ -166,6 +168,7 @@ const renderingNestedComment = (nestID, content) => {
   nestedForm.remove();
   const commentDiv = document.createElement('div');
   commentDiv.className = `mb-3`;
+  commentDiv.id = `${nestID}`;
   commentDiv.style = `
   border: 1px solid rgba(90, 40, 40, 0.1);
   border-top:none;
@@ -187,10 +190,28 @@ const renderingNestedComment = (nestID, content) => {
   commentHeader.prepend(commentAvatar);
   const commentBody = document.createElement('p');
   commentBody.innerHTML = content;
-  commentDiv.append(commentHeader, commentBody);
+  const renderNestedDelBtn = document.createElement('a');
+  renderNestedDelBtn.className = `nestedDeleteBtn`;
+  renderNestedDelBtn.innerHTML = `
+  <button
+      style="
+        color: white;
+        border: none;
+        outline: none;
+        background-color: steelblue;
+        border-radius: 10px;
+        position: absolute;
+        top: 10px;
+        right: 30px;
+      "
+    >
+      Delete
+    </button>`;
+  commentDiv.append(commentHeader, commentBody, renderNestedDelBtn);
   const parentCommentDiv = document.querySelector(`[id="${commentID}"]`);
   parentCommentDiv.nextElementSibling.append(commentDiv);
   refreshNestedBtns();
+  refreshNestedDeleteBtns();
   nestedState = false;
   commentState = false;
 };
@@ -206,10 +227,11 @@ const submitNestedComment = async (e) => {
     return;
   }
   try {
-    const nestFetch = await fetch('/community/addNestedComment', {
+    const nestFetch = await fetch('/community/nested', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        postID,
         commentID,
         content,
       }),
@@ -272,9 +294,10 @@ const commentDelete = async (e) => {
   const targetComment = e.target.parentElement.parentElement;
   const checkNested = targetComment.nextElementSibling;
   if (checkNested.innerHTML) {
+    document.body.style = 'overflow:hidden';
     const nestedModal = document.createElement('div');
     nestedModal.id = `nestedModal`;
-    nestedModal.style = `position:absolute;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.4)`;
+    nestedModal.style = `position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.4);overflow:hidden`;
     nestedModal.innerHTML = `
     <div class="modal-dialog" style="top:30%">
       <div class="modal-content">
@@ -291,16 +314,33 @@ const commentDelete = async (e) => {
     const nestedModalBtn = document.querySelector('#nestedModalBtn');
     nestedModalBtn.addEventListener('click', () => {
       nestedModal.remove();
+      document.body.style = 'overflow:auto';
       return;
     });
     return;
   }
-  //db 먼저 삭제
-  console.log(targetComment.id);
-  const deleteComment = await fetch('/community/comments', {
+  try {
+    const deleteComment = await fetch(`/community/comments/${postID}`, {
+      method: 'delete',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ commentID: targetComment.id }),
+    });
+    if (deleteComment.status === 200) {
+      const comment = document.querySelector(`[id="${targetComment.id}"]`);
+      comment.remove();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const nestedDelete = async (e) => {
+  const parentNested = e.target.parentElement.parentElement;
+  const nestedID = parentNested.id;
+  const deleteNested = await fetch(`/community/nested/${nestedID}`, {
     method: 'delete',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ commentID: targetComment.id }),
+    body: JSON.stringify({ postID }),
   });
 };
 
@@ -318,7 +358,6 @@ if (commentForm) {
 
 const refreshCommentDeleteBtns = () => {
   commentDeleteBtns = document.querySelectorAll(`.commentDeleteBtn`);
-  console.log(commentDeleteBtns);
   if (commentDeleteBtns) {
     commentDeleteBtns.forEach((commentDeleteBtn) => {
       commentDeleteBtn.addEventListener('click', commentDelete);
@@ -329,9 +368,17 @@ const refreshCommentDeleteBtns = () => {
 const refreshNestedBtns = () => {
   if (articleContainer.dataset.isloggedin === 'true') {
     let allNestedBtn = document.querySelectorAll('#nestedCommentBtn');
-    console.log();
     allNestedBtn.forEach((nestedBtn) => {
       nestedBtn.addEventListener('click', handleClickNestedComment);
+    });
+  }
+};
+
+const refreshNestedDeleteBtns = () => {
+  if (nestedDeleteBtns) {
+    nestedDeleteBtns = document.querySelectorAll(`.nestedDeleteBtn`);
+    nestedDeleteBtns.forEach((nestedDelBtn) => {
+      nestedDelBtn.addEventListener('click', nestedDelete);
     });
   }
 };
@@ -339,5 +386,6 @@ const refreshNestedBtns = () => {
 function init() {
   refreshNestedBtns();
   refreshCommentDeleteBtns();
+  refreshNestedDeleteBtns();
 }
 init();

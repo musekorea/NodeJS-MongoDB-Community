@@ -127,7 +127,7 @@
         <%if(locals.user.nickname!==locals.post.user){%>
         <span id="editBtn" style="pointer-events: none"></span>
         <%}else{%>
-        <a id="editBtn" href="/community/editArticle/<%=locals.post._id%>">
+        <a id="editBtn" href="/community/article/<%=locals.post._id%>">
           <button class="btn btn-danger" type="button">Edit</button>
           <%}%> <%}else{%> <%}%>
         </a>

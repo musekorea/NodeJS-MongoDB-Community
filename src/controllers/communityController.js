@@ -6,7 +6,11 @@ let counter;
 
 export const communityController = async (req, res) => {
   try {
-    const posts = await db.collection('posts').find().toArray();
+    const posts = await db
+      .collection('posts')
+      .find()
+      .sort({ _id: -1 })
+      .toArray();
     posts.forEach((post) => {
       post.createdAt = createdAt(post.createdAt);
       if (post.comments) {
@@ -155,7 +159,7 @@ export const putEditArticleController = async (req, res) => {
 };
 
 export const commentController = async (req, res) => {
-  const postID = req.body.postID;
+  const postID = req.params.id;
   const content = req.body.comment;
   try {
     const commentDB = await db.collection('comments').insertOne({
@@ -233,6 +237,7 @@ export const deleteArticleController = async (req, res) => {
 export const addNestedCommentController = async (req, res) => {
   try {
     const addNestedComment = await db.collection('nestedComments').insertOne({
+      postID: req.params,
       user: req.session.user.nickname,
       content: req.body.content,
       ownerComment: req.body.commentID,
@@ -278,6 +283,31 @@ export const addNestedCommentController = async (req, res) => {
   }
 };
 
-export const commentDeleteController = (req, res) => {
+export const commentDeleteController = async (req, res) => {
   console.log(req.body);
+  const commentID = new ObjectId(req.body.commentID);
+  try {
+    const users = await db
+      .collection('users')
+      .updateOne(
+        { nickname: req.session.user.nickname },
+        { $pull: { comments: commentID } }
+      );
+    const posts = await db.collection('posts').updateOne(
+      { _id: Number(req.params.id) },
+      {
+        $pull: { comments: commentID },
+      }
+    );
+    const commetns = await db
+      .collection('comments')
+      .deleteOne({ _id: commentID });
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteNestedCommentController = async (req, res) => {
+  console.log(req.body, req.params);
 };

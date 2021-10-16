@@ -1,6 +1,6 @@
 <div
   class="mb-3"
-  id="<%=nestedComment._id%>"
+  id="<%=nestedComment.id%>"
   style="
     border-right: 1px solid rgba(90, 40, 40, 0.1);
     border-bottom: 1px solid rgba(90, 40, 40, 0.1);
@@ -31,5 +31,24 @@
     ><span class="text-muted"> <%=nestedComment.createdAt%></span>
   </div>
   <p><%=nestedComment.content%></p>
+  <!-- DELETE BUTTON -->
+  <%if(locals.isLoggedIn&&nestedComment.user===locals.user.nickname){%>
+  <a class="nestedDeleteBtn" href="#"
+    ><button
+      style="
+        color: white;
+        border: none;
+        outline: none;
+        background-color: steelblue;
+        border-radius: 10px;
+        position: absolute;
+        top: 10px;
+        right: 30px;
+      "
+    >
+      Delete
+    </button>
+  </a>
+  <%}%>
 </div>
 <div id="xxxx"></div>
