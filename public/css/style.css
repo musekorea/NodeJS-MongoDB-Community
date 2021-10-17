@@ -76,3 +76,34 @@ a:visited {
   display: none;
   color: steelblue;
 }
+.nestedCommentBtn {
+  position: absolute;
+  bottom: 15px;
+  right: 30px;
+  border: none;
+  outline: none;
+  border-radius: 50%;
+  background-color: lightslategray;
+  font-weight: bolder;
+  color: white;
+}
+.sortBtns {
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+.sortBtns a {
+  color: cornflowerblue;
+  opacity: 0.3;
+}
+
+.sortBtns a:hover {
+  color: tomato;
+  font-weight: bolder;
+  opacity: 1;
+}
+.sortBtns a.active {
+  color: cornflowerblue;
+  font-weight: bolder;
+  opacity: 1;
+}

@@ -13,6 +13,8 @@ import {
   addNestedCommentController,
   commentDeleteController,
   deleteNestedCommentController,
+  sortByNewController,
+  sortByPopularontroller,
 } from '../controllers/communityController';
 import { loginOnly, ownerCheck } from '../middlewares';
 
@@ -51,5 +53,8 @@ communityRouter.delete('/comments/:id', loginOnly, commentDeleteController);
 communityRouter.post('/nested/:id', loginOnly, addNestedCommentController);
 
 communityRouter.delete('/nested/:id', loginOnly, deleteNestedCommentController);
+
+communityRouter.get(`/sort/new`, sortByNewController);
+communityRouter.get(`/sort/popular`, sortByPopularontroller);
 
 export default communityRouter;

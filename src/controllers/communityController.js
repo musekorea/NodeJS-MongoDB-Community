@@ -339,3 +339,47 @@ export const deleteNestedCommentController = async (req, res) => {
     return res.status(500).redirect('/error');
   }
 };
+
+export const sortByNewController = async (req, res) => {
+  try {
+    const posts = await db
+      .collection('posts')
+      .find({})
+      .sort({ _id: -1 })
+      .toArray();
+    posts.forEach((post) => {
+      post.createdAt = createdAt(post.createdAt);
+      if (post.comments) {
+        post.commentsNumber = post.comments.length;
+      } else {
+        post.commentsNumber = 0;
+      }
+    });
+    return res.status(200).render('community.ejs', { posts, type: 'new' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).redirect('/error');
+  }
+};
+
+export const sortByPopularontroller = async (req, res) => {
+  try {
+    const posts = await db
+      .collection('posts')
+      .find({})
+      .sort({ views: -1 })
+      .toArray();
+    posts.forEach((post) => {
+      post.createdAt = createdAt(post.createdAt);
+      if (post.comments) {
+        post.commentsNumber = post.comments.length;
+      } else {
+        post.commentsNumber = 0;
+      }
+    });
+    return res.status(200).render('community.ejs', { posts, type: 'popular' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).redirect('/error');
+  }
+};

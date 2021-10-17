@@ -74,18 +74,7 @@ const createComment = (comment) => {
   commentBody.innerHTML = comment;
   const nestedCommentBtn = document.createElement('button');
   nestedCommentBtn.innerHTML = `↩`;
-  nestedCommentBtn.id = `nestedCommentBtn`;
-  nestedCommentBtn.style = `   
-    position: absolute;
-    bottom: 15px;
-    right: 30px;
-    border: none;
-    outline: none;
-    border-radius: 50%;
-    background-color: lightslategray;
-    font-weight: bolder;
-    color: white;
-  `;
+  nestedCommentBtn.class = `nestedCommentBtn`;
   const commentDeleteJSBtn = document.createElement('a');
   commentDeleteJSBtn.className = `commentDeleteBtn`;
   commentDeleteJSBtn.innerHTML = `
@@ -123,6 +112,15 @@ const addComment = (e) => {
   commentForm.classList.remove('hide');
   editBtn.classList.add('hide');
   commentState = true;
+  commentDeleteBtns.forEach((commentDeleteBtn) => {
+    commentDeleteBtn.style = `pointer-events: none`;
+  });
+  nestedDeleteBtns.forEach((nestedDeleteBtn) => {
+    nestedDeleteBtn.style = `pointer-events: none`;
+  });
+  document.querySelectorAll('.nestedCommentBtn').forEach((nestedCommentBtn) => {
+    nestedCommentBtn.style = `pointer-events: none`;
+  });
 };
 
 const cancelComment = (e) => {
@@ -131,6 +129,15 @@ const cancelComment = (e) => {
   commentForm.classList.add('hide');
   editBtn.classList.remove('hide');
   commentState = false;
+  commentDeleteBtns.forEach((commentDeleteBtn) => {
+    commentDeleteBtn.style = `pointer-events: auto`;
+  });
+  nestedDeleteBtns.forEach((nestedDeleteBtn) => {
+    nestedDeleteBtn.style = `pointer-events: auto`;
+  });
+  document.querySelectorAll('.nestedCommentBtn').forEach((nestedCommentBtn) => {
+    nestedCommentBtn.style = `pointer-events: auto`;
+  });
 };
 
 const submitComment = async (e) => {
@@ -151,7 +158,7 @@ const submitComment = async (e) => {
       currentComment.id = commentID;
       const nestCommentContainer = currentComment.nextElementSibling;
       nestCommentContainer.className = commentID;
-      refreshNestedBtns();
+      refreshNestedCommentBtns();
       commentState = false;
       commentNumbers.forEach((commentNumber) => {
         commentNumber.innerText = `${Number(commentNumber.innerText) + 1}`;
@@ -211,20 +218,22 @@ const renderingNestedComment = (nestID, content) => {
   commentDiv.append(commentHeader, commentBody, renderNestedDelBtn);
   const parentCommentDiv = document.querySelector(`[id="${commentID}"]`);
   parentCommentDiv.nextElementSibling.append(commentDiv);
-  refreshNestedBtns();
+  refreshNestedCommentBtns();
   refreshNestedDeleteBtns();
+
   nestedState = false;
   commentState = false;
 };
 
 const submitNestedComment = async (e) => {
   e.preventDefault();
-  nestedState = false;
+
   const content = e.target.children[0].value;
   if (content === '' || !content) {
     const replyInput = document.querySelector('#nestedInput');
     replyInput.placeholder = `Must not be empty 🤸‍♀️`;
     replyInput.classList.add('placeholderError');
+    nestedState = true;
     return;
   }
   try {
@@ -280,21 +289,35 @@ const handleClickNestedComment = (e) => {
     editBtn.style = `pointer-events: none`;
     nestedForm.addEventListener('submit', submitNestedComment);
     nestedState = true;
+    document
+      .querySelectorAll('.commentDeleteBtn')
+      .forEach((commentDeleteBtn) => {
+        commentDeleteBtn.style = `display:none`;
+      });
+    nestedDeleteBtns.forEach((nestedDeleteBtn) => {
+      nestedDeleteBtn.style = `display:none`;
+    });
   } else {
     const nestedForm = document.querySelector('#nestedForm');
     nestedForm.remove();
     nestedState = false;
     commentBtn.style = `pointer-events: auto`;
     editBtn.style = `pointer-events: auto`;
+    document
+      .querySelectorAll('.commentDeleteBtn')
+      .forEach((commentDeleteBtn) => {
+        commentDeleteBtn.style = `display:block`;
+      });
+    nestedDeleteBtns.forEach((nestedDeleteBtn) => {
+      nestedDeleteBtn.style = `display:block`;
+    });
   }
 };
 
 const commentDelete = async (e) => {
   e.preventDefault();
-  console.log(e);
   const targetComment = e.target.parentElement.parentElement;
   const checkNested = targetComment.nextElementSibling;
-
   if (checkNested.innerHTML) {
     document.body.style = 'overflow:hidden';
     const nestedModal = document.createElement('div');
@@ -387,9 +410,9 @@ const refreshCommentDeleteBtns = () => {
   }
 };
 
-const refreshNestedBtns = () => {
+const refreshNestedCommentBtns = () => {
   if (articleContainer.dataset.isloggedin === 'true') {
-    let allNestedBtn = document.querySelectorAll('#nestedCommentBtn');
+    let allNestedBtn = document.querySelectorAll('.nestedCommentBtn');
     allNestedBtn.forEach((nestedBtn) => {
       nestedBtn.addEventListener('click', handleClickNestedComment);
     });
@@ -406,7 +429,7 @@ const refreshNestedDeleteBtns = () => {
 };
 
 function init() {
-  refreshNestedBtns();
+  refreshNestedCommentBtns();
   refreshCommentDeleteBtns();
   refreshNestedDeleteBtns();
 }

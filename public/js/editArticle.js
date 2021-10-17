@@ -31,7 +31,6 @@ const deleteArticle = async (e) => {
       redirect: 'follow',
     });
     if (deleteArticle.status === 200) {
-      return window.location.replace(`/community/community`);
     }
   } catch (error) {
     console.log(error);
