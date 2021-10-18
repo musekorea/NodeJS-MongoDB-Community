@@ -2,9 +2,12 @@ const goodBtn = document.querySelector('#goodBtn');
 const badBtn = document.querySelector('#badBtn');
 const goodNum = document.querySelector('#goodNum');
 const badNum = document.querySelector('#badNum');
+const views = document.querySelector('#views');
 
 let goodState = false;
 let badState = false;
+
+views.innerHTML = Number(views.innerHTML) + 1;
 
 const addGood = async (e) => {
   e.preventDefault();

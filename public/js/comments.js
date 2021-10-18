@@ -74,7 +74,9 @@ const createComment = (comment) => {
   commentBody.innerHTML = comment;
   const nestedCommentBtn = document.createElement('button');
   nestedCommentBtn.innerHTML = `↩`;
-  nestedCommentBtn.class = `nestedCommentBtn`;
+  nestedCommentBtn.className = `nestedCommentBtn`;
+  nestedCommentBtn.style = `pointer-events:auto`;
+  nestedCommentBtn.type = `button`;
   const commentDeleteJSBtn = document.createElement('a');
   commentDeleteJSBtn.className = `commentDeleteBtn`;
   commentDeleteJSBtn.innerHTML = `
@@ -100,7 +102,7 @@ const createComment = (comment) => {
   );
   commentsContainer.prepend(commentDiv);
   commentState = false;
-  refreshNestedBtns();
+  refreshNestedCommentBtns();
   const nestCommentContainer = document.createElement('div');
   commentsContainer.insertBefore(nestCommentContainer, commentDiv.nextSibling);
   refreshCommentDeleteBtns();

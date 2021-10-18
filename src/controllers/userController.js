@@ -11,7 +11,6 @@ export const getJoinController = (req, res) => {
 };
 
 export const postJoinController = async (req, res) => {
-  console.log(req.file);
   const email = req.body.joinEmail;
   const pwd = req.body.joinPassword;
   const pwd2 = req.body.joinPassword2;
@@ -360,7 +359,6 @@ export const postEditProfileController = async (req, res) => {
       .findOne({ email: req.session.user.email });
     const hashingPassword = currentUser.password;
     const result = bcrypt.compareSync(currentPassword, hashingPassword);
-    console.log(result);
     if (!result) {
       req.flash('emailCheck', ` : 👮‍♀️ Password doesn't match!`);
       return res.status(403).redirect(`/user/editProfile`);
