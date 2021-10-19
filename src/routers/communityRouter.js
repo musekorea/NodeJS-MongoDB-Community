@@ -15,6 +15,7 @@ import {
   deleteNestedCommentController,
   sortByNewController,
   sortByPopularontroller,
+  searchController,
 } from '../controllers/communityController';
 import { loginOnly, ownerCheck } from '../middlewares';
 
@@ -56,5 +57,7 @@ communityRouter.delete('/nested/:id', loginOnly, deleteNestedCommentController);
 
 communityRouter.get(`/sort/new`, sortByNewController);
 communityRouter.get(`/sort/popular`, sortByPopularontroller);
+
+communityRouter.get(`/search`, searchController);
 
 export default communityRouter;

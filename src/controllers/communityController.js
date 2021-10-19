@@ -414,3 +414,18 @@ export const sortByPopularontroller = async (req, res) => {
     return res.status(500).redirect('/error');
   }
 };
+
+export const searchController = async (req, res) => {
+  const query = req.query.value;
+  console.log(query);
+  const results = await db
+    .collection('posts')
+    .find({
+      $or: [
+        { title: { $regex: query, $options: 'i' } },
+        { content: { $regex: query, $options: 'i' } },
+      ],
+    })
+    .toArray();
+  console.log(results);
+};
