@@ -1,6 +1,7 @@
 <html>
   <head>
     <%- include("./components/HEADS.ejs")%>
+    <script defer src="/js/community.js"></script>
     <title>Code Me : Schedule List</title>
   </head>
   <body>
@@ -29,13 +30,13 @@
 
 <!--============= PAGINATION============-->
         <ul class="pagination justify-content-center">
-          <li class="page-item disabled">
-            <a class="page-link">Previous</a>
+          <li id="prePageBtn"  class="page-item">
+            <a class="page-link" href="#">Previous</a>
           </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
+          <%for(let i=1; i<=locals.totalPage;i++){%>
+            <li class="page-item pageBtn"><a class="page-link pagelink" href="/community/community/<%=i%>"><%=i%></a></li>
+          <%}%>
+          <li id="nextPageBtn" class="page-item ">
             <a class="page-link" href="#">Next</a>
           </li>
           <%if(locals.isLoggedIn){%>

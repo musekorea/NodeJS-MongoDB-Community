@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <%- include("./components/HEADS.ejs")%>
+    <title>Code Me : Search Results</title>
+  </head>
+  <body>
+    <%- include("./components/NAVBAR.ejs")%>
+    <div class="container mt-3">
+      <h3 class="text-center">Search Results</h3>
+      <div class="mb-3" style="padding: 0 20px" > keyword :
+      <span style="margin-right: 20px;color:indianred;font-weight: bolder;"><%=locals.query%></span>
+      <span style="color: green; font-weight: bolder">✔</span>matches :
+      <span><%=locals.posts.length%> </span>
+    </div>
+    <!-- ========POST LIST===================-->
+    <div class="list-group">
+      <%locals.posts.forEach((post)=>{%> <%- include("./components/POST.ejs",
+      {post})%> <%})%>
+    </div>
+
+    <!--============= PAGINATION============-->
+    <ul class="pagination justify-content-center">
+      <li class="page-item disabled">
+        <a class="page-link">Previous</a>
+      </li>
+      <li class="page-item"><a class="page-link" href="#">1</a></li>
+      <li class="page-item"><a class="page-link" href="#">2</a></li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item">
+        <a class="page-link" href="#">Next</a>
+      </li>
+      <%if(locals.isLoggedIn){%>
+      <a href="/community/article"
+        ><button
+          type="button"
+          class="btn btn-success"
+          style="margin-left: 50px"
+        >
+          Write a Post
+        </button></a
+      >
+      <%}%>
+    </ul>
+  </body>
+</html>

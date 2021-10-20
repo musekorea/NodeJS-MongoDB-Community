@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <%- include("./components/HEADS.ejs")%>
+    <title>Code Me : Welcome</title>
+  </head>
+  <body>
+    <%- include("./components/NAVBAR.ejs")%> <%if(locals.messages.loginOnly){%>
+
+    <p class="flashMessage"><%=locals.messages.loginOnly%></p>
+    <%}%>
+    <div
+      class="container mt-5"
+      style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <h3 class="text-center">Sorry! No results found</h3>
+      <img
+        src="../images/noResult.png"
+        style="width: 30%; margin-top: 30px"
+        alt="noResult"
+      />
+    </div>
+  </body>
+</html>

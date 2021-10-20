@@ -5,11 +5,17 @@ import { ObjectId } from 'mongodb';
 let counter;
 
 export const communityController = async (req, res) => {
+  const pageNum = req.params.page;
+  console.log(pageNum);
   try {
+    const allPosts = await db.collection('posts').find().toArray();
+    const totalPage = Math.ceil(allPosts.length / 7);
     const posts = await db
       .collection('posts')
       .find()
       .sort({ _id: -1 })
+      .limit(7)
+      .skip(7 * (pageNum - 1))
       .toArray();
     posts.forEach((post) => {
       post.createdAt = createdAt(post.createdAt);
@@ -19,8 +25,7 @@ export const communityController = async (req, res) => {
         post.commentsNumber = 0;
       }
     });
-
-    return res.status(200).render('community.ejs', { posts });
+    return res.status(200).render('community.ejs', { posts, totalPage });
   } catch (error) {
     console.log(error);
     return res.status(500).redirect('/error');
@@ -57,7 +62,7 @@ export const postWriteController = async (req, res) => {
       );
     const posts = await db.collection('posts').find().toArray();
     req.session.posts = posts;
-    return res.status(300).redirect('/community/community');
+    return res.status(300).redirect('/community/community/1');
   } catch (error) {
     console.log(error);
     return res.status(500).redirect('/error');
@@ -417,15 +422,24 @@ export const sortByPopularontroller = async (req, res) => {
 
 export const searchController = async (req, res) => {
   const query = req.query.value;
-  console.log(query);
-  const results = await db
-    .collection('posts')
-    .find({
-      $or: [
-        { title: { $regex: query, $options: 'i' } },
-        { content: { $regex: query, $options: 'i' } },
-      ],
-    })
-    .toArray();
-  console.log(results);
+  try {
+    const results = await db
+      .collection('posts')
+      .find({
+        $or: [
+          { title: { $regex: query, $options: 'i' } },
+          { content: { $regex: query, $options: 'i' } },
+        ],
+      })
+      .toArray();
+    console.log(results);
+    if (results.length !== 0) {
+      return res.status(200).render('search.ejs', { posts: results, query });
+    } else {
+      return res.status(200).render('noSearch.ejs');
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).redirect('/error');
+  }
 };

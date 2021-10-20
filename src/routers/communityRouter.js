@@ -21,7 +21,7 @@ import { loginOnly, ownerCheck } from '../middlewares';
 
 const communityRouter = express.Router();
 
-communityRouter.get('/community', communityController);
+communityRouter.get('/community/:page', communityController);
 communityRouter.get('/post/:id', getArticleController);
 communityRouter.get('/article', loginOnly, getWriteController);
 communityRouter.post('/article', loginOnly, postWriteController);
