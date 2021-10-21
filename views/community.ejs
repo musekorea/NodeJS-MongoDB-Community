@@ -10,15 +10,15 @@
       <h3 class="text-center">Community</h3>
       <div class="mb-3" style="padding: 0 5px;">
         <span>sort by:</span>
-        <%if(locals.type===`new`){%>
-        <button id="newSortBtn" class="sortBtns"><a class="active" href="/community/sort/new"> ⏱ New</a> </button>
-        <button id="popularSortBtn" class="sortBtns "> <a href="/community/sort/popular"> 🏆 Popular</a></button> 
-        <%}else if(locals.type===`popular`){%>
-          <button id="newSortBtn" class="sortBtns "><a href="/community/sort/new"> ⏱ New</a> </button>
-          <button id="popularSortBtn" class="sortBtns"> <a class="active" href="/community/sort/popular"> 🏆 Popular</a></button> 
+        <%if(locals.sortType===`new`){%>
+        <button id="newSortBtn" class="sortBtns"><a class="active" href="#"> ⏱ New</a> </button>
+        <button id="popularSortBtn" class="sortBtns "> <a href="#"> 🏆 Popular</a></button> 
+        <%}else if(locals.sortType===`popular`){%>
+          <button id="newSortBtn" class="sortBtns "><a href="#"> ⏱ New</a> </button>
+          <button id="popularSortBtn" class="sortBtns"> <a class="active" href="#"> 🏆 Popular</a></button> 
         <%}else{%>
-          <button id="newSortBtn" class="sortBtns "><a class="active" href="/community/sort/new"> ⏱ New</a> </button>
-          <button id="popularSortBtn" class="sortBtns"> <a href="/community/sort/popular"> 🏆 Popular</a></button> 
+          <button id="newSortBtn" class="sortBtns "><a class="active" href="#"> ⏱ New</a> </button>
+          <button id="popularSortBtn" class="sortBtns"> <a href="#"> 🏆 Popular</a></button> 
         <%}%>
       </div>
 <!-- ========POST LIST===================-->

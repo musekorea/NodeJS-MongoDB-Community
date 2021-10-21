@@ -377,11 +377,16 @@ export const deleteNestedCommentController = async (req, res) => {
 };
 
 export const sortByNewController = async (req, res) => {
+  const pageNum = req.params.page;
   try {
+    const allPosts = await db.collection('posts').find().toArray();
+    const totalPage = Math.ceil(allPosts.length / 7);
     const posts = await db
       .collection('posts')
       .find({})
       .sort({ _id: -1 })
+      .limit(7)
+      .skip(7 * (pageNum - 1))
       .toArray();
     posts.forEach((post) => {
       post.createdAt = createdAt(post.createdAt);
@@ -391,7 +396,9 @@ export const sortByNewController = async (req, res) => {
         post.commentsNumber = 0;
       }
     });
-    return res.status(200).render('community.ejs', { posts, type: 'new' });
+    return res
+      .status(200)
+      .render('community.ejs', { posts, sortType: 'new', totalPage });
   } catch (error) {
     console.log(error);
     return res.status(500).redirect('/error');
@@ -399,11 +406,17 @@ export const sortByNewController = async (req, res) => {
 };
 
 export const sortByPopularontroller = async (req, res) => {
+  const pageNum = req.params.page;
   try {
+    const allPosts = await db.collection('posts').find().toArray();
+    const totalPage = Math.ceil(allPosts.length / 7);
+    console.log(`totalPage`, totalPage);
     const posts = await db
       .collection('posts')
       .find({})
       .sort({ views: -1 })
+      .limit(7)
+      .skip(7 * (pageNum - 1))
       .toArray();
     posts.forEach((post) => {
       post.createdAt = createdAt(post.createdAt);
@@ -413,7 +426,9 @@ export const sortByPopularontroller = async (req, res) => {
         post.commentsNumber = 0;
       }
     });
-    return res.status(200).render('community.ejs', { posts, type: 'popular' });
+    return res
+      .status(200)
+      .render('community.ejs', { posts, sortType: 'popular', totalPage });
   } catch (error) {
     console.log(error);
     return res.status(500).redirect('/error');

@@ -55,8 +55,8 @@ communityRouter.post('/nested/:id', loginOnly, addNestedCommentController);
 
 communityRouter.delete('/nested/:id', loginOnly, deleteNestedCommentController);
 
-communityRouter.get(`/sort/new`, sortByNewController);
-communityRouter.get(`/sort/popular`, sortByPopularontroller);
+communityRouter.get(`/sort/new/:page`, sortByNewController);
+communityRouter.get(`/sort/popular/:page`, sortByPopularontroller);
 
 communityRouter.get(`/search`, searchController);
 
