@@ -10,10 +10,11 @@ import userRouter from './routers/userRouter.js';
 import communityRouter from './routers/communityRouter.js';
 
 const app = express();
-//asdf
+
 app.use(morgan('dev'));
 app.use(cors());
 app.use(express.static('public'));
+app.use(express.static('assets'));
 app.use('/uploads', express.static('uploads'));
 app.set('view engine', 'ejs');
 app.use(express.json());
