@@ -1,3 +1,4 @@
+import regeneratorRuntime from 'regenerator-runtime';
 const pwd0 = document.querySelector('#oldPassword');
 const pwd1 = document.querySelector('#newPassword1');
 const pwd2 = document.querySelector('#newPassword2');

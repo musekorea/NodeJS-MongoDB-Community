@@ -1,3 +1,4 @@
+import regeneratorRuntime from 'regenerator-runtime';
 const goodBtn = document.querySelector('#goodBtn');
 const badBtn = document.querySelector('#badBtn');
 const goodNum = document.querySelector('#goodNum');

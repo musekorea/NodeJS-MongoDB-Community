@@ -1,3 +1,4 @@
+import regeneratorRuntime from 'regenerator-runtime';
 const editArticleForm = document.querySelector('#editArticleForm');
 const editArticleTitle = document.querySelector('#editArticleTitle');
 const editArticleContent = document.querySelector('#editArticleContent');

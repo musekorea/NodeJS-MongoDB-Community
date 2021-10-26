@@ -1,3 +1,4 @@
+import regeneratorRuntime from 'regenerator-runtime';
 const prePageBtn = document.querySelector('#prePageBtn');
 const nextPageBtn = document.querySelector('#nextPageBtn');
 const pageBtns = document.querySelectorAll('.pageBtn');

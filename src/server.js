@@ -13,8 +13,8 @@ const app = express();
 
 app.use(morgan('dev'));
 app.use(cors());
-app.use(express.static('public'));
-app.use(express.static('assets'));
+app.use('/public', express.static('public'));
+app.use('/assets', express.static('assets'));
 app.use('/uploads', express.static('uploads'));
 app.set('view engine', 'ejs');
 app.use(express.json());

@@ -1,3 +1,4 @@
+import regeneratorRuntime from 'regenerator-runtime';
 const articleContainer = document.querySelector('#articleContainer');
 const commentBtn = document.querySelector('#commentBtn');
 const commentForm = document.querySelector('#commentForm');

@@ -1,0 +1,113 @@
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.selector-for-some-widget {
+  box-sizing: content-box;
+}
+#scheduleTitle {
+  cursor: pointer;
+}
+.d-flex {
+  margin-top: 11px;
+}
+.message {
+  color: red;
+}
+.placeholderError::-webkit-input-placeholder {
+  color: tomato;
+}
+a {
+  text-decoration: none;
+  color: gray;
+}
+a:link {
+  text-decoration: none;
+}
+a:visited {
+  text-decoration: none;
+}
+@keyframes flashDisappear {
+  0% {
+    opacity: 0.7;
+    width: 30%;
+  }
+  25% {
+    opacity: 1;
+    width: 50%;
+  }
+  50% {
+    opacity: 1;
+    width: 50%;
+  }
+  75% {
+    opacity: 0.5;
+    width: 30%;
+  }
+  80% {
+    opacity: 0;
+    width: 30%;
+    transform: translateY(0px);
+    height: 50px;
+    margin: 10px auto 10px auto;
+  }
+  100% {
+    display: none;
+    width: 30%;
+    transform: translateY(-500px);
+    height: 0;
+    margin: 0;
+  }
+}
+.flashMessage {
+  overflow: hidden;
+  height: 50px;
+  font-size: 20px;
+  position: relative;
+  text-align: center;
+  margin: 10px auto 10px auto;
+  padding: 10px;
+  background-color: darkseagreen;
+  border-radius: 20px;
+  animation: flashDisappear 4s ease-in-out forwards;
+}
+.hide {
+  display: none;
+  color: steelblue;
+}
+.nestedCommentBtn {
+  position: absolute;
+  bottom: 15px;
+  right: 30px;
+  border: none;
+  outline: none;
+  border-radius: 50%;
+  background-color: lightslategray;
+  font-weight: bolder;
+  color: white;
+}
+.sortBtns {
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+.sortBtns a {
+  color: cornflowerblue;
+  opacity: 0.3;
+}
+
+.sortBtns a:hover {
+  color: tomato;
+  font-weight: bolder;
+  opacity: 1;
+}
+.sortBtns a.active {
+  color: cornflowerblue;
+  font-weight: bolder;
+  opacity: 1;
+}
+.disabled {
+  pointer-events: none;
+}
+
