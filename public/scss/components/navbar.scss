@@ -1,0 +1,41 @@
+.navbar {
+  position: fixed;
+  width: 100vw;
+  top: 0;
+  z-index: 99999;
+  height: 65px;
+  #searchForm {
+    position: relative;
+    top: -6px;
+    left: -20px;
+  }
+  #searchInput {
+    background-color: aliceblue;
+  }
+}
+.nav-item {
+  a {
+    display: block;
+    text-transform: uppercase;
+    position: relative;
+  }
+  a:after {
+    content: '';
+    width: 0%;
+    height: 1px;
+    position: absolute;
+    background-color: #888;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%);
+    transition: all 0.4s;
+  }
+  a:hover:after,
+  a:hover:focus {
+    width: 100%;
+  }
+}
+.scrollNavActive {
+  background-color: rgba(128, 128, 128, 0.151);
+  border-radius: 20px;
+}

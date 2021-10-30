@@ -1,0 +1,212 @@
+.index-body {
+  min-height: 1500px;
+  margin: 0;
+  padding: 0;
+}
+/*======= LANDING PAGE =======*/
+.landing-container {
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  #landing-bg {
+    z-index: -1;
+  }
+  #landing-road {
+    z-index: 3;
+  }
+  .welcomeText {
+    position: relative;
+    #landing-text-title {
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      font-size: 8em;
+      text-shadow: 6px 6px 6px lightslategray;
+    }
+    .text-i {
+      font-family: 'Poppins', sans-serif;
+      color: lightgreen;
+      font-size: 1.3em;
+    }
+    .text-l {
+      font-family: 'Poppins', sans-serif;
+      color: khaki;
+      font-size: 1.3em;
+    }
+    #landing-text-sub {
+      font-size: 2.5em;
+      position: relative;
+      top: -20px;
+      color: white;
+    }
+    .textA {
+      color: darksalmon;
+    }
+    .yogiLogo {
+      width: 36px;
+      height: 36px;
+      position: absolute;
+      top: 45px;
+      left: 547px;
+      z-index: 0;
+    }
+    .yogiLogo:hover {
+      cursor: pointer;
+      transform: scale(1.1);
+    }
+    .yogiLogo:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+.landingScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0a2a43;
+  mix-blend-mode: hue;
+  z-index: 3;
+  display: none;
+}
+
+/*======= ABOUT ME =======*/
+.about-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 100px;
+  .about-box {
+    height: 100vh;
+    width: 90%;
+    padding: 20px;
+    margin-top: 100px;
+    background: linear-gradient(
+        338.83deg,
+        #f8c6ff -3.41%,
+        rgba(255, 196, 255, 0) 52.31%
+      ),
+      #ffeec4;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/*====== SKILLS ======  */
+.skills-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 100px;
+  .skills-box {
+    height: 100vh;
+    width: 90%;
+    padding: 20px;
+    margin-top: 100px;
+    /*     background: linear-gradient(120deg, #49abca 60.59%, #214381 113.24%),
+      #191919; */
+    background: radial-gradient(
+      circle at 300%,
+      #ffeec4,
+      #333 50%,
+      #eee 75%,
+      #e4ba52 75%
+    );
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+}
+
+/*====== WORKS ======  */
+.works-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 100px;
+  .works-box {
+    height: 100vh;
+    width: 90%;
+    padding: 20px;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    background: linear-gradient(
+        314.25deg,
+        rgba(10, 185, 149, 0.7) 1.09%,
+        rgba(10, 185, 149, 0) 43.26%
+      ),
+      #dacdff;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+}
+
+/* ===FOOTER=== */
+.bottom-container {
+  height: 200px;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  h2 {
+    margin-top: 100px;
+  }
+}
+//===== SCROLL =====//
+
+@keyframes sectionScroll {
+  from {
+    transform: translateY(30%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+
+section div {
+  opacity: 0;
+}
+
+section.scrollSectionEffect div {
+  animation: sectionScroll 0.8s ease-in-out forwards;
+}
+section.scrollSectionEffect h2 {
+  animation: slide-up 1.8s ease-in-out;
+  color: red;
+}

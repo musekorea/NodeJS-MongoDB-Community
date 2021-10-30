@@ -1,11 +1,67 @@
 <html>
   <head>
     <%- include("./components/HEADS.ejs")%>
+    <script defer src="/assets/js/index.js"></script>
     <title>Code Me : Welcome</title>
   </head>
-  <body>
+  <body class="index-body">
     <%- include("./components/NAVBAR.ejs")%> <%if(locals.messages.loginOnly){%>
     <p class="flashMessage"><%=locals.messages.loginOnly%></p>
     <%}%>
   </body>
+  <!-- LANDING PAGE -->
+  <div class="landing-container">
+    <img src="/assets/images/landing-bg.jpg" id="landing-bg" />
+    <img src="/assets/images/landing-moon.png" id="landing-moon" />
+    <img src="/assets/images/landing-mountain.png" id="landing-mountain" />
+    <img src="/assets/images/landing-road.png" id="landing-road" />
+    <div class="welcomeText">
+      <h2 class="landing-text" id="landing-text-title">
+        Hi, <span class="text-i">I</span>'m <span class="text-l">L</span>ina
+      </h2>
+      <h4 class="landing-text" id="landing-text-sub">
+        Yogi <span class="textA">&</span> Web Developer
+      </h4>
+      <img class="yogiLogo" src="/public/images/yogi.png" alt="" />
+    </div>
+    <div class="landingScreen"></div>
+  </div>
+
+  <!-- ABOUT ME -->
+  <section class="about-container" id="about">
+    <div class="about-box">
+      <h2>About me</h2>
+    </div>
+  </section>
 </html>
+
+<!-- SKILLS -->
+<section class="skills-container" id="skills">
+  <div class="skills-box">
+    <h2>SKILLS</h2>
+    <h3>Frontend</h3>
+    <p>HTML PUG EJS</p>
+    <p>CSS SCSS</p>
+    <p>BOOTSTRAP</p>
+    <p>JAVASCRIPT</p>
+    <h3>Backend</h3>
+    <p>NODEJS & EXPRESS</p>
+    <p>PYTHON & FLASK</p>
+    <p>MONGODB & MYSQL</p>
+    <h3>OTHERS</h3>
+    <p>WEBPACK</p>
+    <p>GIT</p>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section class="works-container" id="works">
+  <div class="works-box">
+    <h2>MY WORKS</h2>
+  </div>
+</section>
+
+<!-- BOTTOM -->
+<section class="bottom-container">
+  <h2>FOOTER</h2>
+</section>

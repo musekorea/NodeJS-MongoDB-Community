@@ -1,1 +1,4 @@
-{ "exec": "babel-node ./src/init.js" }
+{
+  "exec": "babel-node ./src/init.js",
+  "ignore": ["webpack.config.js", "/public/*", "/assets/*"]
+}

@@ -3,8 +3,9 @@ const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-  mode: 'development',
+  mode: 'none',
   watch: true,
+  devtool: 'source-map',
   entry: {
     style: '/public/js/style.js',
     article: '/public/js/article.js',
@@ -12,8 +13,8 @@ module.exports = {
     comments: '/public/js/comments.js',
     community: '/public/js/community.js',
     editArticle: '/public/js/editArticle.js',
+    index: '/public/js/index.js',
   },
-  mode: 'production',
   output: {
     path: path.resolve(__dirname, 'assets'),
     filename: 'js/[name].js',
@@ -28,8 +29,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
       {
         test: /\.js$/,
