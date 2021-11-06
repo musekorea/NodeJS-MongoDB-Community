@@ -1,11 +1,11 @@
 <html>
   <head>
-    <%- include("./components/HEADS.ejs")%>
+    <%-include("./components/HEADS.ejs")%>
     <script defer src="/assets/js/community.js"></script>
     <title>Code Me : Schedule List</title>
   </head>
   <body>
-    <%- include("./components/NAVBAR.ejs")%>
+    <%-include("./components/NAVBAR.ejs")%>
     <div class="container mt-3">
       <h3 id="community-title" class="text-center">Community</h3>
       <div class="mb-3" style="padding: 0 5px;">
@@ -24,7 +24,7 @@
 <!-- ========POST LIST===================-->
       <div class="list-group">
         <%locals.posts.forEach((post)=>{%>
-          <%- include("components/POST.ejs", {post})%>  
+          <%-include("./components/POST.ejs",{post})%>
         <%})%>
       </div>
 
