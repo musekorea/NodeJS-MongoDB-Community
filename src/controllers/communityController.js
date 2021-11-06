@@ -62,7 +62,7 @@ export const postWriteController = async (req, res) => {
       );
     const posts = await db.collection('posts').find().toArray();
     req.session.posts = posts;
-    return res.status(300).redirect('/community/community/1');
+    return res.status(300).redirect('/community/blog/1');
   } catch (error) {
     console.log(error);
     return res.status(500).redirect('/error');
