@@ -1,12 +1,10 @@
 import { db } from '../db.js';
 import { ObjectId } from 'mongodb';
-//const ObjectId = require('mongodb').ObjectId;
 
 let counter;
 
 export const communityController = async (req, res) => {
   const pageNum = req.params.page;
-  console.log(pageNum);
   try {
     const allPosts = await db.collection('posts').find().toArray();
     const totalPage = Math.ceil(allPosts.length / 7);
@@ -227,7 +225,6 @@ export const addBadController = async (req, res) => {
 };
 
 export const deleteArticleController = async (req, res) => {
-  console.log(req.body);
   try {
     const post = await db
       .collection('posts')
@@ -410,7 +407,6 @@ export const sortByPopularontroller = async (req, res) => {
   try {
     const allPosts = await db.collection('posts').find().toArray();
     const totalPage = Math.ceil(allPosts.length / 7);
-    console.log(`totalPage`, totalPage);
     const posts = await db
       .collection('posts')
       .find({})
