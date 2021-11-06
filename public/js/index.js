@@ -7,6 +7,7 @@ const welcomeText = document.querySelector('.welcomeText');
 const yogiLogo = document.querySelector('.yogiLogo');
 let darkMode = false;
 
+//===== PARALLAX LANDING =====//
 window.addEventListener('scroll', () => {
   let scrollValue = window.scrollY;
   landingBG.style.top = `${scrollValue * 0.5}px`;
@@ -31,11 +32,12 @@ yogiLogo.addEventListener('click', (e) => {
   darkMode = !darkMode;
 });
 
-/* SCROLL SPY */
+/*===== NAV SCROLL SPY =====*/
 const sections = document.querySelectorAll('section');
 const navLi = document.querySelectorAll('.scrollScope');
 
 window.addEventListener('scroll', () => {
+  console.log(sections[1].offsetTop);
   let current = '';
   sections.forEach((section) => {
     const sectionTop = section.offsetTop;

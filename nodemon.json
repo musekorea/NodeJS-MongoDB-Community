@@ -1,4 +1,4 @@
 {
-  "exec": "babel-node ./src/init.js",
+  "exec": "babel-node ./src/init.js --presets @babel/preset-env",
   "ignore": ["webpack.config.js", "/public/*", "/assets/*"]
 }

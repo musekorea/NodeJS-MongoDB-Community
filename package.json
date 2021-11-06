@@ -4,8 +4,12 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon",
-    "build": "webpack"
+    "start": "node ./build/init.js",
+    "build": "npm run build:server && npm run build:assets",
+    "build:assets": "webpack --mode=production",
+    "build:server": "babel src -d build --presets @babel/preset-env --presets minify",
+    "dev:server": "nodemon",
+    "dev:assets": "webpack --mode=development -w --devtool=source-map"
   },
   "author": "",
   "license": "ISC",
@@ -32,6 +36,7 @@
     "@babel/node": "^7.15.4",
     "@babel/preset-env": "^7.15.6",
     "babel-loader": "^8.2.3",
+    "babel-preset-minify": "^0.5.1",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.4.0",
     "mini-css-extract-plugin": "^2.4.3",

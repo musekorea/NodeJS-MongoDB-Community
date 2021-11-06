@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import regeneratorRuntime from 'regenerator-runtime';
 
 import { connectDB } from './db.js';
 import app from './server.js';
