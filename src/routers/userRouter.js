@@ -18,7 +18,12 @@ import {
   getChangePasswordController,
   postChangePasswordController,
 } from '../controllers/userController';
-import { multerUpload, loginOnly, logoutOnly } from '../middlewares';
+import {
+  multerUpload,
+  deleteS3Avatar,
+  loginOnly,
+  logoutOnly,
+} from '../middlewares';
 
 const userRouter = express.Router();
 const upload = multerUpload.single('avatar');
@@ -73,6 +78,7 @@ userRouter.post(
       }
     });
   },
+  deleteS3Avatar,
   postEditProfileController
 );
 userRouter.get('/changePassword', loginOnly, getChangePasswordController);

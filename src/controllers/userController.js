@@ -1,8 +1,6 @@
 import { db } from '../db.js';
 import bcrypt from 'bcrypt';
 import fetch from 'cross-fetch';
-import path from 'path';
-import fs from 'fs';
 
 //=========LOCAL JOIN===========================
 
@@ -23,8 +21,9 @@ export const postJoinController = async (req, res) => {
   }
   const birth = req.body.joinBirth;
   let avatar = '';
+  console.log(req.file);
   if (req.file) {
-    avatar = '/' + req.file.path;
+    avatar = req.file.location;
   } else {
     avatar = '/images/noProfile.png';
   }
@@ -261,6 +260,7 @@ export const googleFinishController = async (req, res) => {
       const userJson = await userFetch.json();
       const email = userJson.email;
       const userExist = await db.collection('users').findOne({ email });
+      console.log(userJson);
       if (userExist) {
         req.session.isLoggedIn = true;
         req.session.user = userExist;
@@ -271,7 +271,7 @@ export const googleFinishController = async (req, res) => {
         const gender = '';
         const birth = '';
         let avatar = '';
-        if (userJson.userJson.avatar_url) {
+        if (userJson) {
           avatar = userJson.picture;
         } else {
           avatar = '/images/noProfile.png';
@@ -337,7 +337,9 @@ export const getEditProfileController = (req, res) => {
   res.status(200).render('editUserProfile.ejs');
 };
 
-const deleteAvatarFile = (path) => {
+const deleteAvatarFile = (path) => {};
+
+/* const deleteAvatarFile = (path) => {
   try {
     const checkFileExist = fs.existsSync(path);
     if (checkFileExist) {
@@ -348,7 +350,7 @@ const deleteAvatarFile = (path) => {
   } catch (error) {
     throw error;
   }
-};
+}; */
 
 export const postEditProfileController = async (req, res) => {
   if (req.body.password) {
@@ -365,11 +367,11 @@ export const postEditProfileController = async (req, res) => {
     }
   }
   try {
-    const avatarPath =
-      path.resolve(__dirname, '..', '..') + req.session.user.avatar;
+    const avatarPath = req.session.user.avatar;
+
     let avatar = '';
     if (req.file) {
-      avatar = '/' + req.file.path;
+      avatar = req.file.location;
     } else {
       avatar = req.session.user.avatar;
     }

@@ -1,5 +1,14 @@
 import multer from 'multer';
+import aws from 'aws-sdk';
+import multerS3 from 'multer-s3';
 import { db } from './db.js';
+
+export const s3 = new aws.S3({
+  credentials: {
+    accessKeyId: process.env.AWS_S3_ID,
+    secretAccessKey: process.env.AWS_S3_SECRET,
+  },
+});
 
 export const resLocals = (req, res, next) => {
   res.locals.user = req.session.user;
@@ -16,7 +25,32 @@ export const multerUpload = multer({
   limits: {
     fileSize: 1000000,
   },
+  storage: multerS3({
+    s3: s3,
+    bucket: `codeme-portfolio1/uploads`,
+    acl: 'public-read',
+  }),
 });
+
+export const deleteS3Avatar = (req, res, next) => {
+  if (!req.file) {
+    return next();
+  }
+  console.log(req.session.user.avatar.split('/')[4]);
+  s3.deleteObject(
+    {
+      Bucket: 'codeme-portfolio1',
+      Key: `uploads/${req.session.user.avatar.split('/')[4]}`,
+    },
+    (error, data) => {
+      if (error) {
+        throw error;
+      }
+      console.log(data);
+    }
+  );
+  next();
+};
 
 export const loginOnly = (req, res, next) => {
   if (req.session.isLoggedIn) {
