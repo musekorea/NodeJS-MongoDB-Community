@@ -6,7 +6,7 @@
 |<img src="https://user-images.githubusercontent.com/77679025/147853577-34c28407-c73d-4200-b588-a7703081b35a.jpg" width=300 height=300/>|<img src="https://user-images.githubusercontent.com/77679025/147853524-371a2c44-844c-433e-9005-9a733c571e31.jpg"  width=300 height=300//>|<img src="https://user-images.githubusercontent.com/77679025/147853543-cb257f74-3838-4ac9-946b-317bc906e5e4.jpg"  width=300 height=300//>|<img src="https://user-images.githubusercontent.com/77679025/147853557-3cda66da-134d-402c-a004-0d5a895852d8.jpg"  width=300 height=300//>|
 |:-:|:-:|:-:|:-:|
 |JUNG YUHYUN|MOYA|BAOZI|NICAI|
-| [@musekorea](https://github.com/musekorea) | [@ramram1048](https://github.com/ramram1048) | [@sbyeol3](https://github.com/sbyeol3) | [@jinhyukoo](https://github.com/jinhyukoo)
+| [@musekorea](https://github.com/musekorea) | [@moya](https://github.com/code-me-co) | [@baozi](https://github.com/code-me-co) | [@nicai](https://github.com/code-me-co)
 
 ###  ⚙️ Development Stack
 
