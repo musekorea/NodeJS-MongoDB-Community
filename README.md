@@ -2,6 +2,11 @@
 
 This is simple Portfolio Website
 
+#### Authentication 
+- Local Login
+- Github oAuth
+- Google oAuth
+
 #### 👯‍♀️ MyTeam
 
 |<img src="https://user-images.githubusercontent.com/77679025/147853577-34c28407-c73d-4200-b588-a7703081b35a.jpg" width=300 height=280/>|<img src="https://user-images.githubusercontent.com/77679025/147854954-8e319a11-d819-4db9-a57e-7c7f2c9005dd.jpg"  width=300 height=280//>|<img src="https://user-images.githubusercontent.com/77679025/147855037-4adb2a85-6f28-49bd-afa6-4e443aa8321e.jpg"  width=300 height=280//>|<img src="https://user-images.githubusercontent.com/77679025/147853557-3cda66da-134d-402c-a004-0d5a895852d8.jpg"  width=300 height=280//>|
